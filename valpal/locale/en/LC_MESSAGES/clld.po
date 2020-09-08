@@ -1,0 +1,48 @@
+#: valpal/__init__.py:18
+msgid "Parameter"
+msgstr "Verb meaning"
+
+#: valpal/__init__.py:19
+msgid "Parameters"
+msgstr "Verb meanings"
+
+#: valpal/__init__.py:20
+msgid "Contribution"
+msgstr ""
+
+#: valpal/__init__.py:21
+msgid "Contributions"
+msgstr ""
+
+#: valpal/__init__.py:22
+msgid "Contributor"
+msgstr ""
+
+#: valpal/__init__.py:23
+msgid "Contributors"
+msgstr ""
+
+#: valpal/__init__.py:24
+msgid "Sentence"
+msgstr "Example"
+
+#: valpal/__init__.py:25
+msgid "Sentences"
+msgstr "Examples"
+
+#: valpal/__init__.py:26
+#, fuzzy
+msgid "Value Set"
+msgstr ""
+
+#: valpal/__init__.py:27
+msgid "Value"
+msgstr "Verb form"
+
+#: valpal/__init__.py:28
+msgid "Values"
+msgstr "Verb forms"
+
+#: valpal/__init__.py:29
+msgid "Address"
+msgstr ""
