@@ -35,27 +35,12 @@ class Variety(CustomModelMixin, common.Language, HasFamilyMixin):
     pk = Column(Integer, ForeignKey('language.pk'), primary_key=True)
     glottocode = Column(Unicode)
 
-    @property
-    def primary_contributors(self):
-        return [
-            assoc.contributor
-            for assoc in sorted(
-                self.contributor_assocs,
-                key=lambda a: (a.ord, a.contributor.id))]
 
-    @property
-    def secondary_contributors(self):
-        return ()
-
-
-class LanguageContributor(Base):
+@implementer(interfaces.IContribution)
+class LanguageContribution(CustomModelMixin, common.Contribution):
+    pk = Column(Integer, ForeignKey('contribution.pk'), primary_key=True)
     language_pk = Column(Integer, ForeignKey('language.pk'))
-    contributor_pk = Column(Integer, ForeignKey('contributor.pk'))
-    language = relationship('Language', backref='contributor_assocs')
-    contributor = relationship('Contributor', backref='language_assocs')
-
-    # contributors are ordered.
-    ord = Column(Integer, default=1)
+    language = relationship('Language', backref='contributions')
 
 
 @implementer(interfaces.IParameter)

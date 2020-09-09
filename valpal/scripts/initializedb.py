@@ -57,14 +57,6 @@ def main(args):
         common.Editor(dataset=dataset, contributor=ed, ord=i + 1)
 
 
-    contrib = data.add(
-        common.Contribution,
-        None,
-        id='cldf',
-        name=args.cldf.properties.get('dc:title'),
-        description=args.cldf.properties.get('dc:bibliographicCitation'),
-    )
-
     for lang in iteritems(
         args.cldf, 'LanguageTable',
         'id', 'glottocode', 'name',
@@ -80,6 +72,15 @@ def main(args):
             longitude=lang['longitude'],
             glottocode=lang['glottocode'],
         )
+        DBSession.flush()
+        contrib = data.add(
+            models.LanguageContribution,
+            lang['id'],
+            id=lang['id'],
+            name=lang['name'],
+            language=l,
+        )
+
         for index, name in enumerate(lang['contributors'].split(' and ')):
             parsed_name = HumanName(name)
             pid = slug('{}{}'.format(parsed_name.last, parsed_name.first))
@@ -88,8 +89,10 @@ def main(args):
             else:
                 person = data.add(common.Contributor, pid, id=pid, name=name)
             DBSession.flush()
-            DBSession.add(models.LanguageContributor(
-                language_pk=l.pk, contributor_pk=person.pk, ord=index + 1))
+            DBSession.add(common.ContributionContributor(
+                contribution_pk=contrib.pk,
+                contributor_pk=person.pk,
+                ord=index + 1))
 
     for rec in bibtex.Database.from_file(args.cldf.bibpath, lowercase=True):
         data.add(common.Source, rec.id, _obj=bibtex2source(rec))
