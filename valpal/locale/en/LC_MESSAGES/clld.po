@@ -8,11 +8,11 @@ msgstr "Verb meanings"
 
 #: valpal/__init__.py:20
 msgid "Contribution"
-msgstr ""
+msgstr "Language"
 
 #: valpal/__init__.py:21
 msgid "Contributions"
-msgstr ""
+msgstr "Languages"
 
 #: valpal/__init__.py:22
 msgid "Contributor"

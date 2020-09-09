@@ -51,7 +51,7 @@ def main(global_config, **settings):
 
     config.register_menu(
         ('dataset', partial(menu_item, 'dataset', label='Home')),
-        ('languages', partial(menu_item, 'languages')),
+        ('contributions', partial(menu_item, 'contributions')),
         ('contributors', partial(menu_item, 'contributors')),
         ('parameters', partial(menu_item, 'parameters')),
         ('codingframes', partial(menu_item, 'codingframes', label='All coding frames')),

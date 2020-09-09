@@ -1,7 +1,7 @@
 <%inherit file="../${context.get('request').registry.settings.get('clld.app_template', 'app.mako')}"/>
 <%namespace name="util" file="../util.mako"/>
 <% import valpal.models as m %>
-<%! active_menu_item = "languages" %>
+<%! active_menu_item = "contributions" %>
 
 <h2>${ctx.name}</h2>
 
@@ -33,22 +33,22 @@ ${util.data()}
             ## </div>
         </div>
         <div id="verbs" class="tab-pane">
-            ${request.get_datatable('values', h.models.Value, language=ctx).render()}
+            ${request.get_datatable('values', h.models.Value, language=ctx.language).render()}
         </div>
         <div id="codingframes" class="tab-pane">
-            ${request.get_datatable('codingframes', m.CodingFrame, language=ctx).render()}
+            ${request.get_datatable('codingframes', m.CodingFrame, language=ctx.language).render()}
         </div>
         <div id="codingsets" class="tab-pane">
-            ${request.get_datatable('codingsets', m.CodingSet, language=ctx).render()}
+            ${request.get_datatable('codingsets', m.CodingSet, language=ctx.language).render()}
         </div>
         <div id="alternations" class="tab-pane">
-            ${request.get_datatable('alternations', m.Alternation, language=ctx).render()}
+            ${request.get_datatable('alternations', m.Alternation, language=ctx.language).render()}
         </div>
         <div id="examples" class="tab-pane">
-            ${request.get_datatable('sentences', h.models.Sentence, language=ctx).render()}
+            ${request.get_datatable('sentences', h.models.Sentence, language=ctx.language).render()}
         </div>
         <div id="sources" class="tab-pane">
-            ${request.get_datatable('sources', h.models.Source, language=ctx).render()}
+            ${request.get_datatable('sources', h.models.Source, language=ctx.language).render()}
         </div>
     </div>
 
