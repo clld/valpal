@@ -37,8 +37,7 @@ The ValPaL online database is an edited database consisting of different
 languages which should be regarded as separate publications, like chapters of an
 edited volume.
 These datasets exemplified by
-## FIXME this url does not entirely feel right
-<a href="${request.route_url('contributions')}/icel1247">Icelandic</a> should be
+<a href="${request.resource_url(example_contribution)}">Icelandic</a> should be
 cited as follows:
 </p>
 
