@@ -1,6 +1,7 @@
 import itertools
 import collections
 
+import datetime
 from pycldf import Sources
 from clldutils.misc import nfilter, slug
 from clldutils.color import qualitative_colors
@@ -38,8 +39,9 @@ def main(args):
         id=valpal.__name__,
         domain='valpal.info',
         name='The Valency Patterns Leipzig online database',
-        description='Valency Patterns Leipzig',
 
+        description='Valency Patterns Leipzig',
+        published=datetime.date(2013, 1, 1),
         publisher_name="Max Planck Institute for Evolutionary Anthropology",
         publisher_place="Leipzig",
         publisher_url="http://www.eva.mpg.de",
