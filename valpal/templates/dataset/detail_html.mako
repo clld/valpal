@@ -9,7 +9,7 @@
     </div>
 </%def>
 
-<h2>Welcome to ValPal</h2>
+<h2>Welcome to ValPaL</h2>
 
 <p class="lead">The Valency Patterns Leipzig Online Database</p>
 
@@ -25,6 +25,6 @@
     <img id="home-valency-logo" alt="Valency Project" src="${request.static_url('valpal:static/logo_valency.png')}"/>
     ⇒
     <a href="${request.route_url('contributions')}">
-        <img id="home-valpal-logo" alt="ValPal" src="${request.static_url('valpal:static/logo_valpal_text.png')}"/>
+        <img id="home-valpal-logo" alt="ValPaL" src="${request.static_url('valpal:static/logo_valpal_text.png')}"/>
     </a>
 </p>
