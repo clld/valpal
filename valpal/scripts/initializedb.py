@@ -37,7 +37,7 @@ def main(args):
         valpal.__name__,
         id=valpal.__name__,
         domain='valpal.info',
-        name='ValPal',
+        name='The Valency Patterns Leipzig online database',
 
         publisher_name="Max Planck Institute for the Science of Human History",
         publisher_place="Jena",
