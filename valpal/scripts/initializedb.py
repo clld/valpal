@@ -28,6 +28,7 @@ def iteritems(cldf, t, *cols):
 
 def main(args):
 
+    assert args.cldf, 'The --cldf option is required!'
     assert args.glottolog, 'The --glottolog option is required!'
 
     data = Data()
