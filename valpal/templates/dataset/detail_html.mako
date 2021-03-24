@@ -42,3 +42,10 @@ ${citation.render(example_contribution, request).rstrip('\n')}
 <pre class="citation">
 ${citation.render(ctx, request).rstrip('\n')}
 </pre>
+
+<h3>Terms of use</h3>
+
+The content of this web site is published under a
+<a href="${ctx.license}">${ctx.jsondata['license_name']}</a>.
+We invite the community of users to think about further applications for the
+available data and look forward to your comments, feedback, and questions.
