@@ -10,3 +10,27 @@
     margin-bottom: -15px;
     height: 50px;
 }
+
+p.colab
+{
+    font-size: 32pt;
+    color: gray;
+    font-weight: bold;
+}
+
+#home-dfg-logo
+{
+    height: 18pt;
+}
+#home-eva-logo
+{
+    height: 58pt;
+}
+#home-valency-logo
+{
+    height: 64pt;
+}
+#home-valpal-logo
+{
+    height: 72pt;
+}
