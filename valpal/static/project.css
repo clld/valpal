@@ -1,4 +1,12 @@
 .tab-content table.dataTable
 {
     width: 99.5%;
-};
+}
+
+.brand img
+{
+    /* let the transparent bits of the logo overflow */
+    margin-top: -15px;
+    margin-bottom: -15px;
+    height: 50px;
+}
