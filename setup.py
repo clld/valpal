@@ -1,5 +1,9 @@
 from setuptools import setup, find_packages
 
+ENTRY_POINTS = """\
+[paste.app_factory]
+main = valpal:main
+"""
 
 setup(
     name='valpal',
@@ -9,8 +13,7 @@ setup(
         "Programming Language :: Python",
         "Framework :: Pyramid",
         "Topic :: Internet :: WWW/HTTP",
-        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
-    ],
+        "Topic :: Internet :: WWW/HTTP :: WSGI :: Application"],
     author='',
     author_email='',
     url='',
@@ -27,8 +30,8 @@ setup(
         'clldmpg',
 
         'psycopg2',
-],
-extras_require={
+    ],
+    extras_require={
         'dev': ['flake8', 'waitress'],
         'test': [
             'mock',
@@ -38,11 +41,8 @@ extras_require={
             'pytest-cov',
             'coverage>=4.2',
             'selenium',
-            'zope.component>=3.11.0',
+            'zope.component>=3.11.0'
         ],
     },
     test_suite="valpal",
-    entry_points="""\
-    [paste.app_factory]
-    main = valpal:main
-""")
+    entry_points=ENTRY_POINTS)

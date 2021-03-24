@@ -39,9 +39,9 @@ class LanguagesCol(Col):
 class Languages(datatables.Languages):
     def base_query(self, query):
         return query\
-                .join(Family)\
-                .options(joinedload(models.Variety.family))\
-                .distinct()
+            .join(Family)\
+            .options(joinedload(models.Variety.family))\
+            .distinct()
 
     def col_defs(self):
         # TODO show citation for language contributions
@@ -136,7 +136,6 @@ class CodingFrames(DataTable):
                 .order_by(models.CodingFrame.name)
         else:
             return query.order_by(common.Language.name)
-
 
     def col_defs(self):
         # TODO basic or derived coding frame

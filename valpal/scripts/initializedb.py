@@ -1,10 +1,8 @@
-import itertools
 import collections
 
 import datetime
 from pycldf import Sources
 from clldutils.misc import nfilter, slug
-from clldutils.color import qualitative_colors
 from clld.cliutil import Data, bibtex2source
 from clld.db.meta import DBSession
 from clld.db.models import common
@@ -60,7 +58,6 @@ def main(args):
         ed = data.add(common.Contributor, id_, id=id_, name=name)
         common.Editor(dataset=dataset, contributor=ed, ord=i + 1)
 
-
     for lang in iteritems(
         args.cldf, 'LanguageTable',
         'id', 'glottocode', 'name',
@@ -102,7 +99,6 @@ def main(args):
         data.add(common.Source, rec.id, _obj=bibtex2source(rec))
 
     refs = collections.defaultdict(list)
-
 
     for param in iteritems(args.cldf, 'ParameterTable', 'id', 'concepticonReference', 'name'):
         data.add(

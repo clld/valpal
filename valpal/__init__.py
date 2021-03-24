@@ -1,13 +1,12 @@
 from functools import partial
-import collections
 
 from pyramid.config import Configurator
 
 from clld_glottologfamily_plugin import util
 
-from clld.interfaces import IMapMarker, IValueSet, IValue, IDomainElement
+from clld.interfaces import IMapMarker, IValueSet
 from clld.web.app import menu_item
-from clldutils.svg import pie, icon, data_url
+from clldutils.svg import icon, data_url
 
 # we must make sure custom models are known at database initialization!
 from valpal import models, interfaces
@@ -38,7 +37,6 @@ class LanguageByFamilyMapMarker(util.LanguageByFamilyMapMarker):
             return data_url(icon(req.registry.settings.get('clld.isolates_icon', util.ISOLATES_ICON)))
 
         return super(LanguageByFamilyMapMarker, self).__call__(ctx, req)
-
 
 
 def main(global_config, **settings):
