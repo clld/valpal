@@ -1,4 +1,5 @@
 <%inherit file="../home_comp.mako"/>
+<%namespace name="util" file="../util.mako"/>
 
 <%def name="sidebar()">
     <div class="well">
@@ -28,3 +29,26 @@
         <img id="home-valpal-logo" alt="ValPaL" src="${request.static_url('valpal:static/logo_valpal_text.png')}"/>
     </a>
 </p>
+
+<h3>How to cite ValPaL</h3>
+
+<p>
+The ValPaL online database is an edited database consisting of different
+languages which should be regarded as separate publications, like chapters of an
+edited volume.
+These datasets exemplified by
+## FIXME this url does not entirely feel right
+<a href="${request.route_url('contributions')}/icel1247">Icelandic</a> should be
+cited as follows:
+</p>
+
+<pre>
+${citation.render(example_contribution, request).rstrip('\n')}
+</pre>
+
+<p>The complete work should be cited as follows:</p>
+## TODO: BibTeX link
+
+<pre>
+${citation.render(ctx, request).rstrip('\n')}
+</pre>

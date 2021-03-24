@@ -38,10 +38,11 @@ def main(args):
         id=valpal.__name__,
         domain='valpal.info',
         name='The Valency Patterns Leipzig online database',
+        description='Valency Patterns Leipzig',
 
-        publisher_name="Max Planck Institute for the Science of Human History",
-        publisher_place="Jena",
-        publisher_url="http://www.shh.mpg.de",
+        publisher_name="Max Planck Institute for Evolutionary Anthropology",
+        publisher_place="Leipzig",
+        publisher_url="http://www.eva.mpg.de",
         license="https://creativecommons.org/licenses/by/3.0/",
         jsondata={
             'license_icon': 'cc-by.png',
