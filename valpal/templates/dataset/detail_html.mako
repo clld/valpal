@@ -32,13 +32,13 @@ These datasets exemplified by
 cited as follows:
 </p>
 
-<pre>
+<pre class="citation">
 ${citation.render(example_contribution, request).rstrip('\n')}
 </pre>
 
 <p>The complete work should be cited as follows:</p>
 ## TODO: BibTeX link
 
-<pre>
+<pre class="citation">
 ${citation.render(ctx, request).rstrip('\n')}
 </pre>

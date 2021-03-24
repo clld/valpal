@@ -18,6 +18,12 @@ p.colab
     font-weight: bold;
 }
 
+pre.citation
+{
+    display: inline-block;
+    width: auto;
+}
+
 #home-dfg-logo
 {
     height: 18pt;
