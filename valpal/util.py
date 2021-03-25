@@ -6,4 +6,5 @@ from clld.web.adapters import get_adapter
 def dataset_detail_html(context=None, request=None, **kw):
     return {
         'example_contribution': Contribution.get('icel1247'),
-        'citation': get_adapter(IRepresentation, context, request, ext='md.txt')}
+        'citation': get_adapter(IRepresentation, context, request, ext='md.txt'),
+        'bibtex': get_adapter(IRepresentation, context, request, ext='md.bib')}

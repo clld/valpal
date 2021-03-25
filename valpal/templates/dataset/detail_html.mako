@@ -36,8 +36,10 @@ cited as follows:
 ${citation.render(example_contribution, request).rstrip('\n')}
 </pre>
 
-<p>The complete work should be cited as follows:</p>
-## TODO: BibTeX link
+<p>
+The complete work should be cited as follows:
+${h.button('BibTeX', onclick=h.JSModal.show('BibTeX citation', None, '<pre>{}</pre>'.format(bibtex.render(ctx, request))))}
+</p>
 
 <pre class="citation">
 ${citation.render(ctx, request).rstrip('\n')}
