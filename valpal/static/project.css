@@ -23,14 +23,22 @@ a
 
 .navbar .nav > li > a:hover {
     color: #fff;
-    background-color: #1e7580;
+    /*background-color: #1e7580;*/
+    background-image: linear-gradient(to bottom, #2796a5, #1d717c);
 }
 
 .navbar .nav > .active > a
 {
     color: #efefef;
     /*background-color: #e66014;*/
-    background-image: linear-gradient(to bottom, #bc4f10, #ed732c);
+    background-image: linear-gradient(to bottom, #d35912, #eb6314);
+}
+
+.navbar .nav > .active > a:hover
+{
+    color: #efefef;
+    /*background-color: #e66014;*/
+    background-image: linear-gradient(to bottom, #a4450e, #d35912);
 }
 
 div.navbar-inner {
