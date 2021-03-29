@@ -18,7 +18,7 @@ a
 
 .navbar .nav > li > a {
     color: #fff;
-    font-weight: normal;
+    text-shadow: 0 1px 0 #555;
 }
 
 .navbar .nav > li > a:hover {
@@ -29,7 +29,8 @@ a
 .navbar .nav > .active > a
 {
     color: #efefef;
-    background-color: #e66014;
+    /*background-color: #e66014;*/
+    background-image: linear-gradient(to bottom, #bc4f10, #ed732c);
 }
 
 div.navbar-inner {
