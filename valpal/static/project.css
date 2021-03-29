@@ -11,6 +11,32 @@
     height: 50px;
 }
 
+a
+{
+    color: #2e848f;
+}
+
+.navbar .nav > li > a {
+    color: #fff;
+    font-weight: normal;
+}
+
+.navbar .nav > li > a:hover {
+    color: #fff;
+    background-color: #1e7580;
+}
+
+.navbar .nav > .active > a
+{
+    color: #efefef;
+    background-color: #e66014;
+}
+
+div.navbar-inner {
+    background-color: #47a6b2;
+    background-image: linear-gradient(to bottom, #59bdca, #2e848f);
+}
+
 p.colab
 {
     font-size: 32pt;
