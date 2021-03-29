@@ -6,7 +6,7 @@ from clld.db.models import common
 from clld.web import datatables
 from clld.web.datatables.base import DataTable, LinkCol, Col, LinkToMapCol
 from clld.web.datatables.contribution import ContributorsCol
-from clld.web.datatables.contributor import NameCol
+from clld.web.datatables.contributor import NameCol, ContributionsCol
 from clld.web.util.helpers import external_link, link
 from clld.web.util.htmllib import HTML
 
@@ -22,18 +22,6 @@ class GlottocodeCol(Col):
             'http://glottolog.org/resource/languoid/id/' + item.id,
             label=item.id,
             title='Language information at Glottolog')
-
-
-class LanguagesCol(Col):
-
-    """Render a list of contributions a Contributor has participated in."""
-
-    __kw__ = {'bSearchable': False, 'bSortable': False}
-
-    def format(self, item):
-        return HTML.ul(*[
-            HTML.li(link(self.dt.req, c.language))
-            for c in item.language_assocs])
 
 
 class Languages(datatables.Languages):
@@ -62,15 +50,10 @@ class Languages(datatables.Languages):
 
 class LangContributors(DataTable):
 
-    def base_query(self, _):
-        return DBSession.query(common.Contributor)\
-            .join(models.LanguageContributor)\
-            .join(models.Variety)
-
     def col_defs(self):
         return [
             NameCol(self, 'name'),
-            LanguagesCol(self, 'Languages'),
+            ContributionsCol(self, 'Languages'),
         ]
 
 
