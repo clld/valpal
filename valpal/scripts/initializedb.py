@@ -98,8 +98,6 @@ def main(args):
     for rec in bibtex.Database.from_file(args.cldf.bibpath, lowercase=True):
         data.add(common.Source, rec.id, _obj=bibtex2source(rec))
 
-    refs = collections.defaultdict(list)
-
     for param in iteritems(args.cldf, 'ParameterTable', 'id', 'concepticonReference', 'name'):
         data.add(
             models.Concept,
@@ -107,35 +105,7 @@ def main(args):
             id=param['id'],
             name='{} [{}]'.format(param['name'], param['id']),
         )
-    for form in iteritems(args.cldf, 'FormTable', 'id', 'form', 'languageReference', 'parameterReference', 'source'):
-        vsid = (form['languageReference'], form['parameterReference'])
-        vs = data['ValueSet'].get(vsid)
-        if not vs:
-            vs = data.add(
-                common.ValueSet,
-                vsid,
-                id='-'.join(vsid),
-                language=data['Variety'][form['languageReference']],
-                parameter=data['Concept'][form['parameterReference']],
-                contribution=contrib,
-            )
-        for ref in form.get('source', []):
-            sid, pages = Sources.parse(ref)
-            refs[(vsid, sid)].append(pages)
-        data.add(
-            common.Value,
-            form['id'],
-            id=form['id'],
-            name=form['form'],
-            valueset=vs,
-        )
 
-    for (vsid, sid), pages in refs.items():
-        DBSession.add(common.ValueSetReference(
-            valueset=data['ValueSet'][vsid],
-            source=data['Source'][sid],
-            description='; '.join(nfilter(pages))
-        ))
     load_families(
         Data(),
         [(l.glottocode, l) for l in data['Variety'].values()],
@@ -187,6 +157,45 @@ def main(args):
             derived=row['Derived'],
             language=data['Variety'][row['languageReference']],
         )
+
+    DBSession.flush()
+
+    refs = collections.defaultdict(list)
+
+    for form in iteritems(
+        args.cldf, 'FormTable',
+        'id', 'form', 'languageReference', 'parameterReference', 'source',
+        'Basic_Coding_Frame_ID'
+    ):
+        vsid = (form['languageReference'], form['parameterReference'])
+        vs = data['ValueSet'].get(vsid)
+        if not vs:
+            vs = data.add(
+                common.ValueSet,
+                vsid,
+                id='-'.join(vsid),
+                language=data['Variety'][form['languageReference']],
+                parameter=data['Concept'][form['parameterReference']],
+                contribution=contrib,
+            )
+        for ref in form.get('source', []):
+            source_id, pages = Sources.parse(ref)
+            refs[(vsid, source_id)].append(pages)
+        data.add(
+            models.Form,
+            form['id'],
+            id=form['id'],
+            name=form['form'],
+            basic_codingframe=data['CodingFrame'][form['Basic_Coding_Frame_ID']],
+            valueset=vs,
+        )
+
+    for (vsid, source_id), pages in refs.items():
+        DBSession.add(common.ValueSetReference(
+            valueset=data['ValueSet'][vsid],
+            source=data['Source'][source_id],
+            description='; '.join(nfilter(pages))
+        ))
 
     for row in iteritems(
         args.cldf, 'alternations.csv',

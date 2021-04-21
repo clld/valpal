@@ -16,7 +16,6 @@ ${util.data()}
         <li><a href="#codingsets" data-toggle="tab">Coding sets</a></li>
         <li><a href="#alternations" data-toggle="tab">Alternations</a></li>
         <li><a href="#examples" data-toggle="tab">${_('Sentences')}</a></li>
-        <li><a href="#sources" data-toggle="tab">${_('Sources')}</a></li>
     </ul>
 
     <div class="tab-content">
@@ -33,7 +32,7 @@ ${util.data()}
             ## </div>
         </div>
         <div id="verbs" class="tab-pane">
-            ${request.get_datatable('values', h.models.Value, language=ctx.language).render()}
+            ${request.get_datatable('values', m.Form, language=ctx.language).render()}
         </div>
         <div id="codingframes" class="tab-pane">
             ${request.get_datatable('codingframes', m.CodingFrame, language=ctx.language).render()}
@@ -44,12 +43,9 @@ ${util.data()}
         <div id="alternations" class="tab-pane">
             ${request.get_datatable('alternations', m.Alternation, language=ctx.language).render()}
         </div>
-        <div id="examples" class="tab-pane">
-            ${request.get_datatable('sentences', h.models.Sentence, language=ctx.language).render()}
-        </div>
-        <div id="sources" class="tab-pane">
-            ${request.get_datatable('sources', h.models.Source, language=ctx.language).render()}
-        </div>
+        ## <div id="examples" class="tab-pane">
+        ##     ${request.get_datatable('sentences', h.models.Sentence, language=ctx.language).render()}
+        ## </div>
     </div>
 
     <script>

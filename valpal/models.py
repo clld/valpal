@@ -86,6 +86,14 @@ class CodingFrameIndexNumber(Base):
     argument_type = Column(Unicode)
 
 
+@implementer(interfaces.IValue)
+class Form(CustomModelMixin, common.Value):
+    pk = Column(Integer, ForeignKey('value.pk'), primary_key=True)
+
+    basic_codingframe_pk = Column(Integer, ForeignKey('codingframe.pk'))
+    basic_codingframe = relationship('CodingFrame', backref='forms')
+
+
 @implementer(IAlternation)
 class Alternation(Base, common.IdNameDescriptionMixin):
     language_pk = Column(Integer, ForeignKey('language.pk'))

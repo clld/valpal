@@ -1,10 +1,12 @@
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, subqueryload
 
 from clld.db.meta import DBSession
 from clld.db.models import common
 
 from clld.web import datatables
-from clld.web.datatables.base import DataTable, LinkCol, Col, LinkToMapCol
+from clld.web.datatables.base import (
+    DataTable, Col, LinkCol, LinkToMapCol, RefsCol,
+)
 from clld.web.datatables.contribution import ContributorsCol
 from clld.web.datatables.contributor import NameCol, ContributionsCol
 from clld.web.util.helpers import external_link, link
@@ -138,6 +140,43 @@ class CodingFrames(DataTable):
             ]
 
 
+class Forms(DataTable):
+
+    __constraints__ = [common.Language]
+
+    def base_query(self, query):
+        query = query.outerjoin(common.ValueSet)\
+            .outerjoin(common.Parameter)\
+            .outerjoin(models.CodingFrame)
+        if self.language:
+            query = query.filter(common.ValueSet.language == self.language)
+        else:
+            query = query.outerjoin(common.ValueSet.language)
+        return query.order_by(common.ValueSet.id)
+
+    def col_defs(self):
+        columns = []
+
+        if not self.language:
+            columns.append(
+                LinkCol(
+                    self, 'language', model_col=common.Language.name,
+                    get_object=lambda o: o.language))
+
+        columns.extend((
+            LinkCol(self, 'value', sTitle='Verb form'),
+            LinkCol(
+                self, 'concept', model_col=common.Parameter.description,
+                get_object=lambda o: o.valueset.parameter),
+            LinkCol(
+                self, 'codingframe',
+                sTitle='Basic coding frame',
+                model_col=models.CodingFrame.name,
+                get_object=lambda o: o.basic_codingframe),
+        ))
+        return columns
+
+
 class Alternations(DataTable):
     __constraints__ = [common.Language]
 
@@ -174,4 +213,5 @@ def includeme(config):
     config.register_datatable('microroles', Microroles)
     config.register_datatable('codingsets', CodingSets)
     config.register_datatable('codingframes', CodingFrames)
+    config.register_datatable('values', Forms)
     config.register_datatable('alternations', Alternations)
