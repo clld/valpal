@@ -63,6 +63,10 @@ class CodingSet(Base, common.IdNameDescriptionMixin):
     language_pk = Column(Integer, ForeignKey('language.pk'))
     language = relationship('Language', backref='codingsets')
 
+    codingframe_count = Column(Integer)
+    verb_count = Column(Integer)
+    microrole_count = Column(Integer)
+
     comment = Column(Unicode)
 
 

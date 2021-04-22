@@ -11,6 +11,7 @@ from clld.lib import bibtex
 from clld_glottologfamily_plugin.util import load_families
 
 from nameparser import HumanName
+from sqlalchemy import distinct, func
 
 
 import valpal
@@ -236,3 +237,24 @@ def prime_cache(args):
     This procedure should be separate from the db initialization, because
     it will have to be run periodically whenever data has been updated.
     """
+
+    verbs_per_codingset = dict(
+        DBSession.query(
+            models.CodingFrameIndexNumber.codingset_pk,
+            func.count(distinct(models.Form.pk)))
+        .where(
+            models.CodingFrameIndexNumber.codingframe_pk
+            == models.Form.basic_codingframe_pk)
+        .group_by(models.CodingFrameIndexNumber.codingset_pk)
+        .all())
+    codingframes_per_codingset = dict(
+        DBSession.query(
+            models.CodingFrameIndexNumber.codingset_pk,
+            func.count(distinct(models.CodingFrameIndexNumber.codingframe_pk)))
+        .group_by(models.CodingFrameIndexNumber.codingset_pk)
+        .all())
+
+    for codingset in DBSession.query(models.CodingSet):
+        codingset.codingframe_count = codingframes_per_codingset.get(codingset.pk) or 0
+        codingset.verb_count = verbs_per_codingset.get(codingset.pk) or 0
+        # TODO microrole_count
