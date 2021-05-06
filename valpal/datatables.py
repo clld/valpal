@@ -93,12 +93,12 @@ class CodingSets(DataTable):
             return query.order_by(common.Language.name)
 
     def col_defs(self):
-        # TODO no of microroles
         if self.language:
             return [
                 LinkCol(self, 'name', sTitle='Coding set'),
                 Col(self, 'codingframe_count', sTitle='# Coding frames'),
                 Col(self, 'verb_count', sTitle='# Verbs'),
+                Col(self, 'microrole_count', sTitle='# Microroles'),
             ]
         else:
             return [

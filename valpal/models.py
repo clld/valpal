@@ -90,6 +90,16 @@ class CodingFrameIndexNumber(Base):
     argument_type = Column(Unicode)
 
 
+class FormCodingFrameMicrorole(Base):
+    form_pk = Column(Integer, ForeignKey('form.pk'))
+    form = relationship('Form')
+    codingframe_pk = Column(Integer, ForeignKey('codingframe.pk'))
+    codingframe = relationship('CodingFrame')
+
+    microrole_pk = Column(Integer, ForeignKey('microrole.pk'))
+    microrole = relationship('Microrole')
+
+
 @implementer(interfaces.IValue)
 class Form(CustomModelMixin, common.Value):
     pk = Column(Integer, ForeignKey('value.pk'), primary_key=True)

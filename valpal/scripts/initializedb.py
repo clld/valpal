@@ -231,12 +231,31 @@ def main(args):
             argument_type=row['Argument_Type'],
         )
 
+    for row in iteritems(
+        args.cldf, 'form-coding-frame-microroles.csv',
+        'id', 'formReference', 'Coding_Frame_ID', 'Microrole_IDs'
+    ):
+        form = data['Form'][row['formReference']]
+        codingframe = data['CodingFrame'][row['Coding_Frame_ID']]
+        for role_id in row['Microrole_IDs']:
+            DBSession.add(models.FormCodingFrameMicrorole(
+                form=form,
+                codingframe=codingframe,
+                microrole=data['Microrole'][role_id]))
+
 
 def prime_cache(args):
     """If data needs to be denormalized for lookup, do that here.
     This procedure should be separate from the db initialization, because
     it will have to be run periodically whenever data has been updated.
     """
+
+    codingframes_per_codingset = dict(
+        DBSession.query(
+            models.CodingFrameIndexNumber.codingset_pk,
+            func.count(distinct(models.CodingFrameIndexNumber.codingframe_pk)))
+        .group_by(models.CodingFrameIndexNumber.codingset_pk)
+        .all())
 
     verbs_per_codingset = dict(
         DBSession.query(
@@ -247,14 +266,18 @@ def prime_cache(args):
             == models.Form.basic_codingframe_pk)
         .group_by(models.CodingFrameIndexNumber.codingset_pk)
         .all())
-    codingframes_per_codingset = dict(
+
+    microroles_per_codingset = dict(
         DBSession.query(
             models.CodingFrameIndexNumber.codingset_pk,
-            func.count(distinct(models.CodingFrameIndexNumber.codingframe_pk)))
+            func.count(distinct(models.FormCodingFrameMicrorole.microrole_pk)))
+        .where(
+            models.CodingFrameIndexNumber.codingframe_pk
+            == models.FormCodingFrameMicrorole.codingframe_pk)
         .group_by(models.CodingFrameIndexNumber.codingset_pk)
         .all())
 
     for codingset in DBSession.query(models.CodingSet):
         codingset.codingframe_count = codingframes_per_codingset.get(codingset.pk) or 0
         codingset.verb_count = verbs_per_codingset.get(codingset.pk) or 0
-        # TODO microrole_count
+        codingset.microrole_count = microroles_per_codingset.get(codingset.pk) or 0
