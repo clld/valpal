@@ -22,12 +22,20 @@ ${util.data()}
     <div class="tab-content">
         <div id="about" class="tab-pane active">
             <div class="span8">
+
                 <h3>Contributors</h3>
                 <ul>
                     % for c in ctx.contributor_assocs:
                     <li><a href="${request.resource_url(c.contributor)}">${c.contributor.name}</a></li>
                     % endfor
                 </ul>
+
+                <h3>
+                    How to cite the ${ctx.name} dataset
+                    ${h.button('BibTeX', onclick=h.JSModal.show('BibTeX citation', None, '<pre>{}</pre>'.format(bibtex.render(ctx, request))))}
+                </h3>
+                <pre class="citation">${citation.render(ctx, request).rstrip('\n')}</pre>
+
             </div>
             <div class="span4">
             <div class="well well-small">
