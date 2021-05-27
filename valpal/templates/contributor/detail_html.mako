@@ -31,7 +31,7 @@
 
 <h3>${_('Languages')}</h3>
 <ul>
-    % for c in ctx.language_assocs:
-    <li>${h.link(request, c.language)}</li>
+    % for c in ctx.contribution_assocs:
+    <li>${h.link(request, c.contribution)}</li>
     % endfor
 </ul>
