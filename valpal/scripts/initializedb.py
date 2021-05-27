@@ -1,7 +1,7 @@
 import collections
 
 import datetime
-from pycldf import Sources
+from pycldf.sources import Sources
 from clldutils.misc import nfilter, slug
 from clld.cliutil import Data, bibtex2source
 from clld.db.meta import DBSession
