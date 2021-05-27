@@ -22,17 +22,17 @@ ${util.data()}
     <div class="tab-content">
         <div id="about" class="tab-pane active">
             <div class="span8">
-                <table class="table table-bordered" style="width:auto">
+                <table class="table-unstyled language-details">
                     % if ctx.language.glottocode:
                     <tr>
-                        <th>Glottocode</th>
-                        <td>${h.external_link(h.glottolog_url(ctx.language.glottocode), label=ctx.language.glottocode)}</td>
+                    <th>Glottocode</th>
+                    <td>${h.external_link(h.glottolog_url(ctx.language.glottocode), label=ctx.language.glottocode)}</td>
                     </tr>
                     % endif
                     % if ctx.language.iso_code:
                     <tr>
-                        <th>ISO 639-3 code</th>
-                        <td>${h.external_link('https://iso639-3.sil.org/code/{}'.format(ctx.language.iso_code), label=ctx.language.iso_code)}</td>
+                    <th>ISO 639-3 code</th>
+                    <td>${h.external_link('https://iso639-3.sil.org/code/{}'.format(ctx.language.iso_code), label=ctx.language.iso_code)}</td>
                     </tr>
                     % endif
                     % if ctx.language.family:

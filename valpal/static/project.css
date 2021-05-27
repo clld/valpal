@@ -74,3 +74,9 @@ pre.citation
 {
     height: 72pt;
 }
+
+.language-details th
+{
+    text-align: left;
+    padding-right: 1ex;
+}
