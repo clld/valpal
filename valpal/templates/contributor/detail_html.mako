@@ -29,7 +29,7 @@
     ${util.data(ctx, with_dl=False)}
 </dl>
 
-<h3>${_('Languages')}</h3>
+<h3>${_('Contributions')}</h3>
 <ul>
     % for c in ctx.contribution_assocs:
     <li>${h.link(request, c.contribution)}</li>
