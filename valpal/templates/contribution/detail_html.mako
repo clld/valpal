@@ -22,6 +22,12 @@ ${util.data()}
     <div class="tab-content">
         <div id="about" class="tab-pane active">
             <div class="span8">
+            </div>
+            <div class="span4">
+            <div class="well well-small">
+                ${LanguageMap(ctx.language, request).render()}
+                ${h.format_coordinates(ctx.language)}
+                <hr>
                 <table class="table-unstyled language-details">
                     % if ctx.language.glottocode:
                     <tr>
@@ -42,11 +48,6 @@ ${util.data()}
                     <tr><th>Region</th><td>${ctx.language.macroarea}</td></tr>
                     % endif
                 </table>
-            </div>
-            <div class="span4">
-            <div class="well well-small">
-                ${LanguageMap(ctx.language, request).render()}
-                ${h.format_coordinates(ctx.language)}
             </div>
             </div>
         </div>

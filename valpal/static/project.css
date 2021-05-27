@@ -80,3 +80,8 @@ pre.citation
     text-align: left;
     padding-right: 1ex;
 }
+
+.well hr
+{
+    border-top: 1px solid #e3e3e3;
+}
