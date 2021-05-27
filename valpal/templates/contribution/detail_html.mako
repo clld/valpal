@@ -22,23 +22,26 @@ ${util.data()}
     <div class="tab-content">
         <div id="about" class="tab-pane active">
             <div class="span8">
-                <dl>
+                <table class="table table-bordered" style="width:auto">
                     % if ctx.language.glottocode:
-                    <dt>Glottocode<dt>
-                    ## TODO link to Glottolog
-                    <dd>${h.external_link(h.glottolog_url(ctx.language.glottocode), label=ctx.language.glottocode)}</dd>
+                    <tr>
+                        <th>Glottocode</th>
+                        <td>${h.external_link(h.glottolog_url(ctx.language.glottocode), label=ctx.language.glottocode)}</td>
+                    </tr>
                     % endif
                     % if ctx.language.iso_code:
-                    <dt>ISO 639-3 code<dt>
-                    <dd>${ctx.language.iso_code}</dd>
+                    <tr>
+                        <th>ISO 639-3 code</th>
+                        <td>${ctx.language.iso_code}</td>
+                    </tr>
                     % endif
                     % if ctx.language.family:
-                    <dt>Family<dt><dd>${ctx.language.family.name}</dd>
+                    <tr><th>Family</th><td>${ctx.language.family.name}</td></tr>
                     % endif
                     % if ctx.language.macroarea:
-                    <dt>Region<dt><dd>${ctx.language.macroarea}</dd>
+                    <tr><th>Region</th><td>${ctx.language.macroarea}</td></tr>
                     % endif
-                </dl>
+                </table>
             </div>
             <div class="span4">
             <div class="well well-small">
