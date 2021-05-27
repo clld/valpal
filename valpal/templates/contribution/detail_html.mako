@@ -22,6 +22,12 @@ ${util.data()}
     <div class="tab-content">
         <div id="about" class="tab-pane active">
             <div class="span8">
+                <h3>Contributors</h3>
+                <ul>
+                    % for c in ctx.contributor_assocs:
+                    <li><a href="${request.resource_url(c.contributor)}">${c.contributor.name}</a></li>
+                    % endfor
+                </ul>
             </div>
             <div class="span4">
             <div class="well well-small">
