@@ -1,6 +1,7 @@
 <%inherit file="../${context.get('request').registry.settings.get('clld.app_template', 'app.mako')}"/>
 <%namespace name="util" file="../util.mako"/>
 <% import valpal.models as m %>
+<% from clld.web.maps import LanguageMap %>
 <%! active_menu_item = "contributions" %>
 
 <h2>${ctx.name}</h2>
@@ -21,15 +22,30 @@ ${util.data()}
     <div class="tab-content">
         <div id="about" class="tab-pane active">
             <div class="span8">
-                ${util.files()}
-                ${util.data()}
-                ${ctx.description or ''|n}
+                <dl>
+                    % if ctx.language.glottocode:
+                    <dt>Glottocode<dt>
+                    ## TODO link to Glottolog
+                    <dd>${h.external_link(h.glottolog_url(ctx.language.glottocode), label=ctx.language.glottocode)}</dd>
+                    % endif
+                    % if ctx.language.iso_code:
+                    <dt>ISO 639-3 code<dt>
+                    <dd>${ctx.language.iso_code}</dd>
+                    % endif
+                    % if ctx.language.family:
+                    <dt>Family<dt><dd>${ctx.language.family.name}</dd>
+                    % endif
+                    % if ctx.language.macroarea:
+                    <dt>Region<dt><dd>${ctx.language.macroarea}</dd>
+                    % endif
+                </dl>
             </div>
-            ## <div class="span4">
-            ##     <div class="well well-small">
-            ##         ${ctx.toc or ''|n}
-            ##     </div>
-            ## </div>
+            <div class="span4">
+            <div class="well well-small">
+                ${LanguageMap(ctx.language, request).render()}
+                ${h.format_coordinates(ctx.language)}
+            </div>
+            </div>
         </div>
         <div id="verbs" class="tab-pane">
             ${request.get_datatable('values', m.Form, language=ctx.language).render()}
