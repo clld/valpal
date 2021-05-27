@@ -32,7 +32,7 @@ ${util.data()}
                     % if ctx.language.iso_code:
                     <tr>
                         <th>ISO 639-3 code</th>
-                        <td>${ctx.language.iso_code}</td>
+                        <td>${h.external_link('https://iso639-3.sil.org/code/{}'.format(ctx.language.iso_code), label=ctx.language.iso_code)}</td>
                     </tr>
                     % endif
                     % if ctx.language.family:
