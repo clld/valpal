@@ -20,6 +20,7 @@ from clld_glottologfamily_plugin.models import HasFamilyMixin
 
 from valpal.interfaces import (
     IAlternation,
+    IAlternationValue,
     ICodingFrame,
     ICodingSet,
     IMicrorole,
@@ -102,8 +103,7 @@ class FormCodingFrameMicrorole(Base):
 
 @implementer(interfaces.IValue)
 class Form(CustomModelMixin, common.Value):
-    pk = Column(Integer, ForeignKey('value.pk'), primary_key=True)
-
+    pk = Column(Integer, ForeignKey('value.pk'), primary_key=True) 
     basic_codingframe_pk = Column(Integer, ForeignKey('codingframe.pk'))
     basic_codingframe = relationship('CodingFrame', backref='forms')
 
@@ -116,3 +116,24 @@ class Alternation(Base, common.IdNameDescriptionMixin):
     alternation_type = Column(Unicode)
     coding_frames_text = Column(Unicode)
     complexity = Column(Unicode)
+
+
+@implementer(IAlternationValue)
+class AlternationValue(Base, common.IdNameDescriptionMixin):
+    alternation_pk = Column(Integer, ForeignKey('alternation.pk'))
+    alternation = relationship('Alternation', backref='alternation_values')
+
+    form_pk = Column(Integer, ForeignKey('form.pk'))
+    form = relationship('Form', backref='alternation_values')
+    derived_codingframe_pk = Column(Integer, ForeignKey('codingframe.pk'))
+    derived_codingframe = relationship('CodingFrame', backref='alternation_values')
+
+    alternation_occurs = Column(Unicode)
+    comment = Column(Unicode)
+
+
+class AlternationValueSentence(Base):
+    alternation_value_pk = Column(Integer, ForeignKey('alternationvalue.pk'))
+    alternation_value = relationship('AlternationValue', backref='sentence_assocs')
+    sentence_pk = Column(Integer, ForeignKey('sentence.pk'))
+    sentence = relationship('Sentence', backref='alternation_value_assocs')

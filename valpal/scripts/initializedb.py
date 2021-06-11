@@ -243,6 +243,30 @@ def main(args):
                 codingframe=codingframe,
                 microrole=data['Microrole'][role_id]))
 
+    for row in iteritems(
+        args.cldf, 'alternation-values.csv',
+        'id', 'Alternation_ID', 'formReference', 'Derived_Code_Frame_ID',
+        'Alternation_Occurs', 'comment'
+    ):
+        alternation = data['Alternation'][row['Alternation_ID']]
+        form = data['Form'][row['formReference']]
+        if row.get('Derived_Code_Frame_ID'):
+            codingframe = data['CodingFrame'][row['Derived_Code_Frame_ID']]
+        else:
+            codingframe = None
+
+        data.add(
+            models.AlternationValue,
+            row['id'],
+            alternation=alternation,
+            form=form,
+            derived_codingframe=codingframe,
+            alternation_occurs=row['Alternation_Occurs'],
+            comment=row['comment']
+        )
+
+    # TODO fill AlternationValueSentence
+
 
 def prime_cache(args):
     """If data needs to be denormalized for lookup, do that here.

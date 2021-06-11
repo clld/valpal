@@ -17,3 +17,5 @@
 
 ## TODO value table
 ## Verb meaning | verb form | occurs (R/M/N) | Basic Coding Frame | Derived Coding Frame |
+
+${request.get_datatable('alternationvalues', m.AlternationValue, alternation=ctx).render()}

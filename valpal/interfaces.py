@@ -15,3 +15,7 @@ class ICodingFrame(Interface):
 
 class IAlternation(Interface):
     pass
+
+
+class IAlternationValue(Interface):
+    pass

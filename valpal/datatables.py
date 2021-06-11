@@ -1,4 +1,4 @@
-from sqlalchemy.orm import joinedload, subqueryload
+from sqlalchemy.orm import aliased, joinedload, subqueryload
 
 from clld.db.meta import DBSession
 from clld.db.models import common
@@ -195,6 +195,9 @@ class Alternations(DataTable):
         if self.language:
             return [
                 LinkCol(self, 'name', sTitle='Alternation'),
+                Col(
+                    self, 'alternation_type',
+                    sTitle='Type', choices=['Coded', 'Uncoded']),
                 Col(self, 'description'),
             ]
         else:
@@ -203,8 +206,65 @@ class Alternations(DataTable):
                     self, 'language', model_col=common.Language.name,
                     get_object=lambda o: o.language),
                 LinkCol(self, 'name', sTitle='Alternation'),
+                Col(
+                    self, 'alternation_type',
+                    sTitle='Type', choices=['Coded', 'Uncoded']),
                 Col(self, 'description'),
             ]
+
+
+class AlternationValues(DataTable):
+    __constraints__ = [models.Alternation]
+
+    def base_query(self, _):
+        basic_coding_frame_alias = aliased(models.CodingFrame)
+        derived_coding_frame_alias = aliased(models.CodingFrame)
+        query = DBSession.query(models.AlternationValue)\
+            .join(models.Form, isouter=True)\
+            .join(common.ValueSet, isouter=True)\
+            .join(models.Concept, isouter=True)\
+            .join(
+                basic_coding_frame_alias,
+                models.Form.basic_codingframe,
+                isouter=True)\
+            .join(
+                derived_coding_frame_alias,
+                models.AlternationValue.derived_codingframe,
+                isouter=True)
+        if self.alternation:
+            return query\
+                .filter(models.AlternationValue.alternation == self.alternation)\
+                .order_by(models.AlternationValue.id)
+        else:
+            return query\
+                .join(models.Alternation)\
+                .order_by(models.Alternation.name)
+
+    def col_defs(self):
+        if self.alternation:
+            cols = []
+        else:
+            cols = [LinkCol(
+                self, 'alternation', model_col=models.Alternation.name,
+                get_object=lambda o: o.alternation)]
+        cols.extend((
+            LinkCol(
+                self, 'concept', model_col=models.Concept.name,
+                get_object=lambda o: o.form.valueset.parameter),
+            LinkCol(
+                self, 'verb_form', model_col=models.Form.name,
+                get_object=lambda o: o.form),
+            Col(
+                self, 'alternation_occurs',
+                sTitle='Occurs', choices=['Never', 'Regularly', 'No data', 'Marginally']),
+            LinkCol(
+                self, 'basic_coding_frame', model_col=models.CodingFrame.name,
+                get_object=lambda o: o.form.basic_codingframe),
+            LinkCol(
+                self, 'derived_coding_frame', model_col=models.CodingFrame.name,
+                get_object=lambda o: o.derived_codingframe),
+        ))
+        return cols
 
 
 def includeme(config):
@@ -217,3 +277,4 @@ def includeme(config):
     config.register_datatable('codingframes', CodingFrames)
     config.register_datatable('values', Forms)
     config.register_datatable('alternations', Alternations)
+    config.register_datatable('alternationvalues', AlternationValues)

@@ -68,5 +68,7 @@ def main(global_config, **settings):
         'codingframe', models.CodingFrame, interfaces.ICodingFrame, with_index=True)
     config.register_resource(
         'alternation', models.Alternation, interfaces.IAlternation, with_index=True)
+    config.register_resource(
+        'alternationvalue', models.AlternationValue, interfaces.IAlternationValue, with_index=True)
 
     return config.make_wsgi_app()
