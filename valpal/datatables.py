@@ -181,38 +181,48 @@ class CodingFrames(DataTable):
 
 class Forms(DataTable):
 
-    __constraints__ = [common.Language]
+    __constraints__ = [common.Language, models.CodingFrame]
 
     def base_query(self, query):
         query = query.outerjoin(common.ValueSet)\
             .outerjoin(common.Parameter)\
             .outerjoin(models.CodingFrame)
+
         if self.language:
             query = query.filter(common.ValueSet.language == self.language)
         else:
             query = query.outerjoin(common.ValueSet.language)
+
+        if self.codingframe:
+            query = query.filter(models.Form.basic_codingframe == self.codingframe)
+
         return query.order_by(common.ValueSet.id)
 
     def col_defs(self):
         columns = []
 
-        if not self.language:
+        if not self.codingframe and not self.language:
             columns.append(
                 LinkCol(
                     self, 'language', model_col=common.Language.name,
-                    get_object=lambda o: o.language))
+                    get_object=lambda o: o.valueset.language))
 
         columns.extend((
             LinkCol(self, 'value', sTitle='Verb form'),
             LinkCol(
                 self, 'concept', model_col=common.Parameter.description,
                 get_object=lambda o: o.valueset.parameter),
-            LinkCol(
-                self, 'codingframe',
-                sTitle='Basic coding frame',
-                model_col=models.CodingFrame.name,
-                get_object=lambda o: o.basic_codingframe),
         ))
+
+        # TODO list of microroles
+        if not self.codingframe:
+            columns.append(
+                LinkCol(
+                    self, 'codingframe',
+                    sTitle='Basic coding frame',
+                    model_col=models.CodingFrame.name,
+                    get_object=lambda o: o.basic_codingframe))
+
         return columns
 
 
