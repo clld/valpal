@@ -1,4 +1,5 @@
 import collections
+import re
 
 import datetime
 from pycldf.sources import Sources
@@ -167,7 +168,6 @@ def main(args):
         'translatedText', 'comment', 'Original_Orthography', 'Translation_Other',
         'Number', 'Example_Type'
     ):
-        # TODO source
         data.add(
             models.Example,
             row['id'],
@@ -241,12 +241,21 @@ def main(args):
 
     for row in iteritems(
         args.cldf, 'ExampleTable',
-        'id', 'Form_IDs',
+        'id', 'Form_IDs', 'source',
     ):
         example = data['Example'][row['id']]
+
         for form_id in (row.get('Form_IDs') or ()):
             form = data['Form'][form_id]
             DBSession.add(common.ValueSentence(sentence=example, value=form))
+
+        for ref in row['source']:
+            src_id, pages = re.fullmatch(r'(.*?)(\[[^\]]*\])?', ref).groups()
+            source = data['Source'][src_id]
+            DBSession.add(common.SentenceReference(
+                description=pages,
+                sentence=example,
+                source=source))
 
     for row in iteritems(
         args.cldf, 'coding-frame-index-numbers.csv',

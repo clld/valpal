@@ -26,6 +26,7 @@ _('Value Set')
 _('Value')
 _('Values')
 _('Address')
+_('Datapoints')
 
 
 class LanguageByFamilyMapMarker(util.LanguageByFamilyMapMarker):
