@@ -161,6 +161,28 @@ def main(args):
 
     DBSession.flush()
 
+    for row in iteritems(
+        args.cldf, 'ExampleTable',
+        'id', 'languageReference', 'primaryText', 'analyzedWord', 'gloss',
+        'translatedText', 'comment', 'Original_Orthography', 'Translation_Other',
+        'Number', 'Example_Type'
+    ):
+        # TODO source
+        data.add(
+            models.Example,
+            row['id'],
+            id=row['id'],
+            name=row['primaryText'],
+            description=row['translatedText'],
+            analyzed=row.get('analyzedWord'),
+            gloss=row.get('gloss'),
+            type=row.get('Example_Type'),
+            comment=row.get('comment'),
+            original_script=row.get('Original_Orthography'),
+            language=data['Variety'][row['languageReference']],
+            number=row.get('Number'),
+        )
+
     refs = collections.defaultdict(list)
 
     for form in iteritems(
@@ -216,6 +238,15 @@ def main(args):
         )
 
     DBSession.flush()
+
+    for row in iteritems(
+        args.cldf, 'ExampleTable',
+        'id', 'Form_IDs',
+    ):
+        example = data['Example'][row['id']]
+        for form_id in (row.get('Form_IDs') or ()):
+            form = data['Form'][form_id]
+            DBSession.add(common.ValueSentence(sentence=example, value=form))
 
     for row in iteritems(
         args.cldf, 'coding-frame-index-numbers.csv',

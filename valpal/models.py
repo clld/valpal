@@ -44,6 +44,13 @@ class LanguageContribution(CustomModelMixin, common.Contribution):
     language = relationship('Language', backref='contributions')
 
 
+@implementer(interfaces.ISentence)
+class Example(CustomModelMixin, common.Sentence):
+    pk = Column(Integer, ForeignKey('sentence.pk'), primary_key=True)
+    number = Column(Integer)
+    translation_other = Column(Unicode)
+
+
 @implementer(interfaces.IParameter)
 class Concept(CustomModelMixin, common.Parameter):
     pk = Column(Integer, ForeignKey('parameter.pk'), primary_key=True)
