@@ -159,21 +159,24 @@ class CodingFrames(DataTable):
             return query.order_by(common.Language.name)
 
     def col_defs(self):
-        # TODO basic or derived coding frame
-        # TODO verb count
-        # TODO alternations
         if self.language:
-            # TODO list of meanings and values
-            return [
-                LinkCol(self, 'name', sTitle='Coding frame'),
-            ]
+            cols = []
         else:
-            return [
+            cols = [
                 LinkCol(
                     self, 'language', model_col=common.Language.name,
                     get_object=lambda o: o.language),
-                LinkCol(self, 'name', sTitle='Coding frame'),
             ]
+
+        # TODO verb count
+        # TODO alternations
+        # TODO list of meanings and values
+        cols.extend((
+            LinkCol(self, 'name', sTitle='Coding frame'),
+            Col(self, 'derived', sTitle='Type', choices=['Basic', 'Derived']),
+        ))
+
+        return cols
 
 
 class Forms(DataTable):
@@ -227,24 +230,23 @@ class Alternations(DataTable):
 
     def col_defs(self):
         if self.language:
-            return [
-                LinkCol(self, 'name', sTitle='Alternation'),
-                Col(
-                    self, 'alternation_type',
-                    sTitle='Type', choices=['Coded', 'Uncoded']),
-                Col(self, 'description'),
-            ]
+            cols = []
         else:
-            return [
+            cols = [
                 LinkCol(
                     self, 'language', model_col=common.Language.name,
                     get_object=lambda o: o.language),
-                LinkCol(self, 'name', sTitle='Alternation'),
-                Col(
-                    self, 'alternation_type',
-                    sTitle='Type', choices=['Coded', 'Uncoded']),
-                Col(self, 'description'),
             ]
+
+        cols.expand((
+            LinkCol(self, 'name', sTitle='Alternation'),
+            Col(
+                self, 'alternation_type',
+                sTitle='Type', choices=['Coded', 'Uncoded']),
+            Col(self, 'description'),
+        ))
+
+        return cols
 
 
 class AlternationValues(DataTable):
