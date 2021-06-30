@@ -5,10 +5,11 @@ from clld.db.models import common
 
 from clld.web import datatables
 from clld.web.datatables.base import (
-    DataTable, Col, LinkCol, LinkToMapCol, RefsCol,
+    DataTable, Col, DetailsRowLinkCol, LinkCol, LinkToMapCol, RefsCol,
 )
 from clld.web.datatables.contribution import ContributorsCol
 from clld.web.datatables.contributor import NameCol, ContributionsCol
+from clld.web.datatables.sentence import TsvCol, TypeCol
 from clld.web.util.helpers import external_link, link
 from clld.web.util.htmllib import HTML
 
@@ -57,6 +58,39 @@ class LangContributors(DataTable):
             NameCol(self, 'name'),
             ContributionsCol(self, 'Languages'),
         ]
+
+
+class Examples(datatables.Sentences):
+
+    def base_query(self, query):
+        return query.order_by(
+            models.Example.language_pk,
+            models.Example.number)
+
+    def col_defs(self):
+        if self.language:
+            cols = []
+        else:
+            cols = [
+                LinkCol(
+                    self, 'language', model_col=common.Language.name,
+                    get_object=lambda o: o.language),
+            ]
+
+        cols.extend((
+            Col(self, 'number', sTitle='#', bSortable=False, bSearchable=False),
+            LinkCol(self, 'name', sTitle='Primary text', sClass="object-language"),
+            TsvCol(self, 'analyzed', sTitle='Analyzed text'),
+            TsvCol(self, 'gloss', sClass="gloss"),
+            Col(self,
+                'description',
+                sTitle=self.req.translate('Translation'),
+                sClass="translation"),
+            TypeCol(self, 'type'),
+            DetailsRowLinkCol(self, 'd'),
+        ))
+
+        return cols
 
 
 class Microroles(DataTable):
@@ -272,6 +306,7 @@ def includeme(config):
 
     config.register_datatable('contributors', LangContributors)
     config.register_datatable('languages', Languages)
+    config.register_datatable('sentences', Examples)
     config.register_datatable('microroles', Microroles)
     config.register_datatable('codingsets', CodingSets)
     config.register_datatable('codingframes', CodingFrames)
