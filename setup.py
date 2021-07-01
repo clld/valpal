@@ -30,6 +30,7 @@ setup(
         'clldmpg',
 
         'psycopg2',
+        'markdown',
     ],
     extras_require={
         'dev': ['flake8', 'waitress'],

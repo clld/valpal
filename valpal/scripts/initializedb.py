@@ -11,6 +11,7 @@ from clld.lib import bibtex
 
 from clld_glottologfamily_plugin.util import load_families
 
+from markdown import markdown
 from nameparser import HumanName
 from sqlalchemy import distinct, func
 
@@ -324,8 +325,8 @@ def prime_cache(args):
     """
 
     for language in DBSession.query(common.Language):
-        # TODO convert markdown to HTML
-        language.markup_description = language.description
+        if language.description:
+            language.markup_description = markdown(language.description)
 
     codingframes_per_codingset = dict(
         DBSession.query(
