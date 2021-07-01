@@ -180,6 +180,7 @@ def main(args):
             comment=row.get('comment'),
             original_script=row.get('Original_Orthography'),
             language=data['Variety'][row['languageReference']],
+            contribution=data['LanguageContribution'][row['languageReference']],
             number=row.get('Number'),
         )
 

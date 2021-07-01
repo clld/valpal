@@ -78,7 +78,7 @@ ${util.data()}
             ${request.get_datatable('alternations', m.Alternation, language=ctx.language).render()}
         </div>
         <div id="examples" class="tab-pane">
-            ${request.get_datatable('sentences', h.models.Sentence, language=ctx.language).render()}
+            ${request.get_datatable('sentences', h.models.Sentence, contribution=ctx).render()}
         </div>
     </div>
 

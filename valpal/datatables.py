@@ -62,19 +62,23 @@ class LangContributors(DataTable):
 
 class Examples(datatables.Sentences):
 
+    __constraints__ = [common.Contribution]
+
     def base_query(self, query):
-        return query.order_by(
-            models.Example.language_pk,
-            models.Example.number)
+        return query\
+            .order_by(
+                models.Example.contribution_pk,
+                models.Example.number)
 
     def col_defs(self):
-        if self.language:
+        if self.contribution:
             cols = []
         else:
             cols = [
                 LinkCol(
-                    self, 'language', model_col=common.Language.name,
-                    get_object=lambda o: o.language),
+                    self, 'contribution', sTitle='Language',
+                    model_col=common.Contribution.name,
+                    get_object=lambda o: o.contribution),
             ]
 
         cols.extend((

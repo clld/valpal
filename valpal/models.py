@@ -50,6 +50,9 @@ class Example(CustomModelMixin, common.Sentence):
     number = Column(Integer)
     translation_other = Column(Unicode)
 
+    contribution_pk = Column(Integer, ForeignKey('contribution.pk'))
+    contribution = relationship('Contribution', backref='examples')
+
 
 @implementer(interfaces.IParameter)
 class Concept(CustomModelMixin, common.Parameter):
