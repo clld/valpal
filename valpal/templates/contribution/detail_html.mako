@@ -36,6 +36,11 @@ ${util.data()}
                 </h3>
                 <pre class="citation">${citation.render(ctx, request).rstrip('\n')}</pre>
 
+                % if ctx.language.markup_description:
+                <h3>Comments</h3>
+
+                ${ctx.language.markup_description|n}
+                % endif
             </div>
             <div class="span4">
             <div class="well well-small">

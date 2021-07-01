@@ -60,17 +60,25 @@ def main(args):
         ed = data.add(common.Contributor, id_, id=id_, name=name)
         common.Editor(dataset=dataset, contributor=ed, ord=i + 1)
 
+    etc_dir = args.cldf.directory.parent / 'etc'
     for lang in iteritems(
         args.cldf, 'LanguageTable',
         'id', 'glottocode', 'name',
         'latitude', 'longitude',
         'contributors',
     ):
+        comments_file = etc_dir / 'comments-{}.md'.format(lang['glottocode'])
+        try:
+            with comments_file.open('r', encoding='utf-8') as f:
+                desc = f.read().strip()
+        except IOError:
+            desc = None
         l = data.add(
             models.Variety,
             lang['id'],
             id=lang['id'],
             name=lang['name'],
+            description=desc,
             latitude=lang['latitude'],
             longitude=lang['longitude'],
             glottocode=lang['glottocode'],
@@ -314,6 +322,10 @@ def prime_cache(args):
     This procedure should be separate from the db initialization, because
     it will have to be run periodically whenever data has been updated.
     """
+
+    for language in DBSession.query(common.Language):
+        # TODO convert markdown to HTML
+        language.markup_description = language.description
 
     codingframes_per_codingset = dict(
         DBSession.query(
