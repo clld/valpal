@@ -248,7 +248,7 @@ class Alternations(DataTable):
                     get_object=lambda o: o.language),
             ]
 
-        cols.expand((
+        cols.extend((
             LinkCol(self, 'name', sTitle='Alternation'),
             Col(
                 self, 'alternation_type',
