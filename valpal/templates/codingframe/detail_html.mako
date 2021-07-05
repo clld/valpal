@@ -28,7 +28,8 @@
         .join(m.AlternationValue.form, isouter=True)
         .join(basic_coding_frame_alias, m.Form.basic_codingframe, isouter=True)
         .filter(m.AlternationValue.derived_codingframe == ctx)
-        .order_by(m.Alternation.name))
+        .order_by(m.Alternation.pk)
+        .distinct(m.Alternation.pk))
 %>
 
 %   if alternation_values:
