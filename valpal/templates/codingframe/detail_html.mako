@@ -1,4 +1,5 @@
 <%inherit file="../${context.get('request').registry.settings.get('clld.app_template', 'app.mako')}"/>
+<% from sqlalchemy.orm import aliased %>
 <% from clld.db.meta import DBSession %>
 <% import valpal.models as m %>
 <%namespace name="util" file="../util.mako"/>
@@ -9,9 +10,41 @@
 <h2>Derived coding frame</h2>
 % else:
 <h2>Basic coding frame</h2>
-% endif:
+% endif
 
-<p>Schema: ${ctx.name}</p>
+<p><b>Schema</b>: ${ctx.name}</p>
+
+% if ctx.derived == 'Derived':
+<%
+    basic_coding_frame_alias = aliased(m.CodingFrame)
+    derived_coding_frame_alias = aliased(m.CodingFrame)
+    alternation_values = list(
+        DBSession.query(m.AlternationValue)
+        .join(m.AlternationValue.alternation, isouter=True)
+        .join(
+            derived_coding_frame_alias,
+            m.AlternationValue.derived_codingframe,
+            isouter=True)
+        .join(m.AlternationValue.form, isouter=True)
+        .join(basic_coding_frame_alias, m.Form.basic_codingframe, isouter=True)
+        .filter(m.AlternationValue.derived_codingframe == ctx)
+        .order_by(m.Alternation.name))
+%>
+
+%   if alternation_values:
+<h3>Derived from</h3>
+
+<table class="table table-bordered" style="width:auto">
+<tr><th>Basic coding frame</th><th>via</th></tr>
+%     for val in alternation_values:
+  <tr>
+    <td>${h.link(request, val.form.basic_codingframe)}</td>
+    <td>${h.link(request, val.alternation)}</td>
+  </tr>
+%     endfor
+</table>
+%   endif
+% endif
 
 % if ctx.description:
 <p>${ctx.description | n}</p>
