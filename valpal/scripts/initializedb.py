@@ -315,7 +315,19 @@ def main(args):
             comment=row['comment']
         )
 
-    # TODO fill AlternationValueSentence
+    DBSession.flush()
+
+    for row in iteritems(
+        args.cldf,
+        'alternation-values.csv', 'id', 'exampleReference'
+    ):
+        val = data['AlternationValue'].get(row['id'])
+        for ex_id in row.get('exampleReference', ()):
+            ex = data['Example'].get(ex_id)
+            if val and ex:
+                DBSession.add(models.AlternationValueSentence(
+                    alternation_value=val,
+                    sentence=ex))
 
 
 def prime_cache(args):
