@@ -51,13 +51,14 @@
 
 <h3>Verb forms occuring <em>regularly</em> in Alternations with this derived coding frame</h3>
 
-## TODO table
-## | Verb form | Meaning | Microrole 1 | Microrole 2 | Microrole 3 |
+## TODO table: | Microrole 1 | Microrole 2 | Microrole 3 |
+${request.get_datatable('alternationvalues', m.AlternationValue, codingframe=ctx).render()}
 
 % else:
 
 <h3>Verb forms with this basic coding frame</h3>
 
+## TODO table: | Microrole 1 | Microrole 2 | Microrole 3 |
 ${request.get_datatable('values', m.Form, codingframe=ctx).render()}
 
 % endif

@@ -264,7 +264,7 @@ class Alternations(DataTable):
 
 
 class AlternationValues(DataTable):
-    __constraints__ = [models.Alternation]
+    __constraints__ = [models.Alternation, models.CodingFrame]
 
     def base_query(self, _):
         basic_coding_frame_alias = aliased(models.CodingFrame)
@@ -281,6 +281,14 @@ class AlternationValues(DataTable):
                 derived_coding_frame_alias,
                 models.AlternationValue.derived_codingframe,
                 isouter=True)
+
+        if self.codingframe:
+            query = query\
+                .filter(
+                    models.AlternationValue.derived_codingframe == self.codingframe)\
+                .filter(
+                    models.AlternationValue.alternation_occurs == 'Regularly')
+
         if self.alternation:
             return query\
                 .filter(models.AlternationValue.alternation == self.alternation)\
@@ -297,6 +305,7 @@ class AlternationValues(DataTable):
             cols = [LinkCol(
                 self, 'alternation', model_col=models.Alternation.name,
                 get_object=lambda o: o.alternation)]
+
         cols.extend((
             LinkCol(
                 self, 'concept', model_col=models.Concept.name,
@@ -304,16 +313,21 @@ class AlternationValues(DataTable):
             LinkCol(
                 self, 'verb_form', model_col=models.Form.name,
                 get_object=lambda o: o.form),
-            Col(
-                self, 'alternation_occurs',
-                sTitle='Occurs', choices=['Never', 'Regularly', 'No data', 'Marginally']),
             LinkCol(
                 self, 'basic_coding_frame', model_col=models.CodingFrame.name,
                 get_object=lambda o: o.form.basic_codingframe),
-            LinkCol(
-                self, 'derived_coding_frame', model_col=models.CodingFrame.name,
-                get_object=lambda o: o.derived_codingframe),
         ))
+
+        if not self.codingframe:
+            cols.extend((
+                LinkCol(
+                    self, 'derived_coding_frame', model_col=models.CodingFrame.name,
+                    get_object=lambda o: o.derived_codingframe),
+                Col(
+                    self, 'alternation_occurs',
+                    sTitle='Occurs', choices=['Never', 'Regularly', 'No data', 'Marginally']),
+            ))
+
         return cols
 
 
