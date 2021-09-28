@@ -2,7 +2,7 @@ from functools import partial
 
 from pyramid.config import Configurator
 
-from clld_glottologfamily_plugin import util
+from clld_glottologfamily_plugin import util as fam_util
 
 from clld.interfaces import IMapMarker, IValueSet
 from clld.web.app import menu_item
@@ -29,13 +29,13 @@ _('Address')
 _('Datapoints')
 
 
-class LanguageByFamilyMapMarker(util.LanguageByFamilyMapMarker):
+class LanguageByFamilyMapMarker(fam_util.LanguageByFamilyMapMarker):
     def __call__(self, ctx, req):
 
         if IValueSet.providedBy(ctx):
             if ctx.language.family:
                 return data_url(icon(ctx.language.family.jsondata['icon']))
-            return data_url(icon(req.registry.settings.get('clld.isolates_icon', util.ISOLATES_ICON)))
+            return data_url(icon(req.registry.settings.get('clld.isolates_icon', fam_util.ISOLATES_ICON)))
 
         return super(LanguageByFamilyMapMarker, self).__call__(ctx, req)
 
