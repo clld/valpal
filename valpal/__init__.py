@@ -80,5 +80,9 @@ def main(global_config, **settings):
     config.add_301(
         '/coding_frames/{fid}',
         lambda req: req.route_url('codingframes', req.matchdict['fid']))
+    config.add_301('/coding_sets', lambda req: req.route_url('codingsets'))
+    config.add_301(
+        '/coding_sets/{sid}',
+        lambda req: req.route_url('codingsets', req.matchdict['sid']))
 
     return config.make_wsgi_app()
