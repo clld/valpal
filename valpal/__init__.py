@@ -72,4 +72,9 @@ def main(global_config, **settings):
     config.register_resource(
         'alternationvalue', models.AlternationValue, interfaces.IAlternationValue, with_index=True)
 
+    config.add_301('/meanings', lambda req: req.route_url('parameters'))
+    config.add_301(
+        '/meanings/{cid}',
+        lambda req: req.route_url('parameters', req.matchdict['cid']))
+
     return config.make_wsgi_app()
