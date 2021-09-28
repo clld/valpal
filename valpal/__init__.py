@@ -84,5 +84,8 @@ def main(global_config, **settings):
     config.add_301(
         '/coding_sets/{sid}',
         lambda req: req.route_url('codingsets', req.matchdict['sid']))
+    config.add_301(
+        '/microroles/{mrid}',
+        lambda req: req.route_url('microroles', req.matchdict['mrid'].rstrip('.')))
 
     return config.make_wsgi_app()
