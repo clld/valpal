@@ -2,7 +2,7 @@
 <% from clld.db.meta import DBSession %>
 <% import valpal.models as m %>
 <%namespace name="util" file="../util.mako"/>
-<%! active_menu_item = "codingframes" %>
+<%! active_menu_item = "alternations" %>
 
 
 <h2>Alternation ‘${ctx.name}’
