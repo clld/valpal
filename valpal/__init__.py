@@ -76,5 +76,9 @@ def main(global_config, **settings):
     config.add_301(
         '/meanings/{cid}',
         lambda req: req.route_url('parameters', req.matchdict['cid']))
+    config.add_301('/coding_frames', lambda req: req.route_url('codingframes'))
+    config.add_301(
+        '/coding_frames/{fid}',
+        lambda req: req.route_url('codingframes', req.matchdict['fid']))
 
     return config.make_wsgi_app()
