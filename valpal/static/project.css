@@ -95,3 +95,38 @@ pre.citation
 {
     border-top: 1px solid #e3e3e3;
 }
+
+p.toplink
+{
+    text-align: right;
+    margin: 0;
+}
+#database-page
+{
+    width: 120ex;
+}
+#database-toc
+{
+    float: right;
+    width: 35ex;
+}
+#database-intro
+{
+    width: 70ex;
+}
+#database-contribs
+{
+    list-style-type: lower-roman;
+}
+div.database-infobox
+{
+    width: 70ex;
+}
+ol.datatable-ex
+{
+    list-style-type: lower-alpha;
+}
+#database-alternations td
+{
+    padding-right: 1ex;
+}
