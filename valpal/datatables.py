@@ -7,10 +7,9 @@ from clld.web import datatables
 from clld.web.datatables.base import (
     DataTable, Col, DetailsRowLinkCol, LinkCol, LinkToMapCol, RefsCol,
 )
-from clld.web.datatables.contribution import ContributorsCol
 from clld.web.datatables.contributor import NameCol, ContributionsCol
 from clld.web.datatables.sentence import TsvCol, TypeCol
-from clld.web.util.helpers import external_link, link
+from clld.web.util.helpers import external_link, link, linked_contributors
 from clld.web.util.htmllib import HTML
 
 from clld_glottologfamily_plugin.models import Family
@@ -25,6 +24,21 @@ class GlottocodeCol(Col):
             'http://glottolog.org/resource/languoid/id/' + item.id,
             label=item.id,
             title='Language information at Glottolog')
+
+
+class LanguageContributorsCol(Col):
+
+    """Render links to the corresponding Contributors of a Language."""
+
+    __kw__ = {'bSearchable': False, 'bSortable': False}
+
+    def format(self, item):
+        contribs = item.contributions
+        if contribs:
+            # XXX assumes that there is only one contrib per language
+            return linked_contributors(self.dt.req, contribs[0])
+        else:
+            return ''
 
 
 class Languages(datatables.Languages):
@@ -46,7 +60,7 @@ class Languages(datatables.Languages):
             Col(self,
                 'longitude',
                 sDescription='<small>The geographic longitude</small>'),
-            ContributorsCol(self, 'contributors'),
+            LanguageContributorsCol(self, 'contributors'),
             LinkToMapCol(self, 'm'),
         ]
 
