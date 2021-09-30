@@ -77,6 +77,13 @@ def main(global_config, **settings):
     config.register_resource(
         'alternationvalue', models.AlternationValue, interfaces.IAlternationValue, with_index=True)
 
+    config.add_page('project')
+    config.add_page('database')
+    config.add_page('credits')
+    config.add_settings(home_comp=[
+        'project', 'database', 'download', 'credits', 'legal', 'contact',
+    ])
+
     # unbreak links to the old webapp
 
     config.add_301('/meanings', lambda req: req.route_url('parameters'))
