@@ -5,6 +5,7 @@ from pyramid.config import Configurator
 from clld_glottologfamily_plugin import util as fam_util
 
 from clld.interfaces import IMapMarker, IValueSet
+from clld.db.models import common
 from clld.web.app import menu_item
 from clldutils.svg import icon, data_url
 
@@ -43,6 +44,10 @@ class LanguageByFamilyMapMarker(fam_util.LanguageByFamilyMapMarker):
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+    settings['route_patterns'] = {
+        'languages': '/languoids',
+        'language': r'/languoids/{id:[^/\.]+}',
+    }
     config = Configurator(settings=settings)
     config.include('clld.web.app')
 
@@ -85,5 +90,9 @@ def main(global_config, **settings):
     config.add_301(
         '/microroles/{mrid}',
         lambda req: req.route_url('microroles', req.matchdict['mrid'].rstrip('.')))
+    config.add_301('/languages', lambda req: req.route_url('contributions'))
+    config.add_301(
+        '/languages/{lid}',
+        lambda req: req.route_url('contributions', req.matchdict['lid']))
 
     return config.make_wsgi_app()
