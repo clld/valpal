@@ -79,20 +79,36 @@ def main(global_config, **settings):
     config.add_301(
         '/meanings/{cid}',
         lambda req: req.route_url('parameters', req.matchdict['cid']))
+
     config.add_301('/coding_frames', lambda req: req.route_url('codingframes'))
     config.add_301(
         '/coding_frames/{fid}',
         lambda req: req.route_url('codingframes', req.matchdict['fid']))
+
     config.add_301('/coding_sets', lambda req: req.route_url('codingsets'))
     config.add_301(
         '/coding_sets/{sid}',
         lambda req: req.route_url('codingsets', req.matchdict['sid']))
+
     config.add_301(
         '/microroles/{mrid}',
         lambda req: req.route_url('microroles', req.matchdict['mrid'].rstrip('.')))
+
     config.add_301('/languages', lambda req: req.route_url('contributions'))
     config.add_301(
         '/languages/{lid}',
         lambda req: req.route_url('contributions', req.matchdict['lid']))
+
+    config.add_301(
+        '/languages/{lid}/coding_frames/{cfid}',
+        lambda req: req.route_url('codingframes', req.matchdict['cfid']))
+
+    config.add_301(
+        '/languages/{lid}/coding_sets/{csid}',
+        lambda req: req.route_url('codingsets', req.matchdict['csid']))
+
+    config.add_301(
+        '/languages/{lid}/alternations/{aid}',
+        lambda req: req.route_url('alternations', req.matchdict['aid']))
 
     return config.make_wsgi_app()
