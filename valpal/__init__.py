@@ -100,13 +100,32 @@ def main(global_config, **settings):
         lambda req: req.route_url('contributions', req.matchdict['lid']))
 
     config.add_301(
+        '/languages/{lid}/verbs',
+        lambda req: req.route_url(
+            'contributions', req.matchdict['lid'], _anchor='tverbs'))
+    config.add_301(
+        '/languages/{lid}/coding_frames',
+        lambda req: req.route_url(
+            'contributions', req.matchdict['lid'], _anchor='tcodingframes'))
+    config.add_301(
+        '/languages/{lid}/coding_sets',
+        lambda req: req.route_url(
+            'contributions', req.matchdict['lid'], _anchor='tcodingsets'))
+    config.add_301(
+        '/languages/{lid}/alternations',
+        lambda req: req.route_url(
+            'contributions', req.matchdict['lid'], _anchor='talternations'))
+    config.add_301(
+        '/languages/{lid}/examples',
+        lambda req: req.route_url(
+            'contributions', req.matchdict['lid'], _anchor='texamples'))
+
+    config.add_301(
         '/languages/{lid}/coding_frames/{cfid}',
         lambda req: req.route_url('codingframes', req.matchdict['cfid']))
-
     config.add_301(
         '/languages/{lid}/coding_sets/{csid}',
         lambda req: req.route_url('codingsets', req.matchdict['csid']))
-
     config.add_301(
         '/languages/{lid}/alternations/{aid}',
         lambda req: req.route_url('alternations', req.matchdict['aid']))
