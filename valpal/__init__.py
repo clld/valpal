@@ -44,6 +44,8 @@ class LanguageByFamilyMapMarker(fam_util.LanguageByFamilyMapMarker):
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+    # move `/languages` out of the way, because the old webapp used that route
+    # for contributions
     settings['route_patterns'] = {
         'languages': '/languoids',
         'language': r'/languoids/{id:[^/\.]+}',
@@ -74,6 +76,8 @@ def main(global_config, **settings):
         'alternation', models.Alternation, interfaces.IAlternation, with_index=True)
     config.register_resource(
         'alternationvalue', models.AlternationValue, interfaces.IAlternationValue, with_index=True)
+
+    # unbreak links to the old webapp
 
     config.add_301('/meanings', lambda req: req.route_url('parameters'))
     config.add_301(
