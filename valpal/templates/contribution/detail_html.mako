@@ -80,7 +80,7 @@ ${util.data()}
             ${request.get_datatable('codingsets', m.CodingSet, contribution=ctx).render()}
         </div>
         <div id="alternations" class="tab-pane">
-            ${request.get_datatable('alternations', m.Alternation, language=ctx.language).render()}
+            ${request.get_datatable('alternations', m.Alternation, contribution=ctx).render()}
         </div>
         <div id="examples" class="tab-pane">
             ${request.get_datatable('sentences', h.models.Sentence, contribution=ctx).render()}

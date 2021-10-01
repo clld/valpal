@@ -137,8 +137,7 @@ class CodingSets(DataTable):
     def base_query(self, _):
         query = DBSession.query(models.CodingSet)\
             .join(common.Language)\
-            .join(models.LanguageContribution)\
-            .join(common.Contribution)
+            .join(models.LanguageContribution)
 
         if self.contribution:
             return query.filter(models.CodingSet.language == self.contribution.language)\
@@ -254,25 +253,27 @@ class Forms(DataTable):
 
 
 class Alternations(DataTable):
-    __constraints__ = [common.Language]
+    __constraints__ = [common.Contribution]
 
     def base_query(self, _):
         query = DBSession.query(models.Alternation)\
-            .join(common.Language)
-        if self.language:
-            return query.filter(models.Alternation.language == self.language)\
+            .join(common.Language)\
+            .join(models.LanguageContribution)
+        if self.contribution:
+            return query.filter(models.Alternation.language == self.contribution.language)\
                 .order_by(models.Alternation.name)
         else:
-            return query.order_by(common.Language.name)
+            return query.order_by(common.Contribution.name)
 
     def col_defs(self):
-        if self.language:
+        if self.contribution:
             cols = []
         else:
             cols = [
                 LinkCol(
-                    self, 'language', model_col=common.Language.name,
-                    get_object=lambda o: o.language),
+                    self, 'contribution', model_col=common.Contribution.name,
+                    get_object=lambda o: o.language.contributions[0],
+                    label='Language'),
             ]
 
         cols.extend((
