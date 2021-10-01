@@ -276,7 +276,7 @@ The "comments" field can contain further non-structured information about all
 aspects of the verb and its relationship to the pre-defined meaning.
 </p>
 
-<div class="well database-infobox">
+<div class="well well-small database-infobox">
   <p>DATABASE FIELDS:</p>
   <dl>
     <dt>Verb form:</dt>
@@ -317,7 +317,7 @@ this would be too much work for most contributors, so a complete set of
 verb-alternation pair examples is not required.
 </p>
 
-<div class="well database-infobox">
+<div class="well well-small database-infobox">
   <p>DATABES FIELDS:</p>
   <dl>
   <dt>Primary text:</dt>
@@ -644,7 +644,7 @@ role frame, please use additional role variables and characterize the additional
 roles in the comment field of the coding verb.
 </p>
 
-<div class="well database-infobox">
+<div class="well well-small database-infobox">
   <p>DATABASE FIELDS:</p>
   <dl>
     <dt>Coding frame schema:</dt>
@@ -722,7 +722,7 @@ Then for each verb, they will have to decide whether the verb occurs in the
 alternation or not, or whether it applies only marginally.
 </p>
 
-<div class="well database-infobox">
+<div class="well well-small database-infobox">
   <p>DATABASE FIELDS:</p>
   <dl>
     <dt>Alternation name:</dt>
@@ -893,7 +893,7 @@ In addition to the 70 pre-defined verb meanings, users may create further verb
 meanings if they want to enter verbs that have other meanings.
 </p>
 
-<div class="well database-infobox">
+<div class="well well-small database-infobox">
   <p>DATABASE FIELDS:</p>
   <dl>
     <dt>Meaning label:</dt>
