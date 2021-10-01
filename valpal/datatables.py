@@ -171,7 +171,7 @@ class CodingFrames(DataTable):
             .join(common.Language)
 
         if self.language:
-            return query.filter(models.CodingSet.language == self.language)\
+            return query.filter(models.CodingFrame.language == self.language)\
                 .order_by(models.CodingFrame.name)
         else:
             return query.order_by(common.Language.name)
