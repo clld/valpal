@@ -7,6 +7,7 @@ from clld.web import datatables
 from clld.web.datatables.base import (
     DataTable, Col, DetailsRowLinkCol, LinkCol, LinkToMapCol, RefsCol,
 )
+from clld.web.datatables.contribution import ContributorsCol
 from clld.web.datatables.contributor import NameCol, ContributionsCol
 from clld.web.datatables.sentence import TsvCol, TypeCol
 from clld.web.util.helpers import external_link, link, linked_contributors
@@ -20,9 +21,10 @@ from valpal import models
 
 class GlottocodeCol(Col):
     def format(self, item):
+        item = self.get_obj(item)
         return external_link(
-            'http://glottolog.org/resource/languoid/id/' + item.id,
-            label=item.id,
+            'http://glottolog.org/resource/languoid/id/' + item.glottocode,
+            label=item.glottocode,
             title='Language information at Glottolog')
 
 
@@ -60,6 +62,7 @@ class LanguageContributorsCol(Col):
 class Languages(datatables.Languages):
     def base_query(self, query):
         return query\
+            .join(models.Variety)\
             .join(Family)\
             .options(joinedload(models.Variety.family))\
             .distinct()
@@ -76,8 +79,40 @@ class Languages(datatables.Languages):
             Col(self,
                 'longitude',
                 sDescription='<small>The geographic longitude</small>'),
-            LanguageContributorsCol(self, 'contributors'),
+            LanguageContributorsCol(self, 'contributor'),
             LinkToMapCol(self, 'm'),
+        ]
+
+
+class Contributions(DataTable):
+
+    def query(self, _):
+        return DBSession.query(models.LanguageContribution)\
+            .join(models.Language)\
+            .join(Family)\
+            .options(joinedload(models.Variety.family))\
+            .distinct()
+
+    def col_defs(self):
+        # TODO show citation for language contributions
+        return [
+            LinkCol(self, 'name'),
+            GlottocodeCol(
+                self, 'id', sTitle='Glottocode',
+                get_object=lambda i: i.language),
+            FamilyCol(
+                self, 'Family', models.Variety,
+                get_object=lambda i: i.language),
+            Col(self,
+                'latitude',
+                get_object=lambda i: i.language,
+                sDescription='<small>The geographic latitude</small>'),
+            Col(self,
+                'longitude',
+                get_object=lambda i: i.language,
+                sDescription='<small>The geographic longitude</small>'),
+            ContributorsCol(self, 'contributors'),
+            #LinkToMapCol(self, 'm'),
         ]
 
 
@@ -384,6 +419,7 @@ class AlternationValues(DataTable):
 def includeme(config):
     """register custom datatables"""
 
+    config.register_datatable('contributions', Contributions)
     config.register_datatable('contributors', LangContributors)
     config.register_datatable('languages', Languages)
     config.register_datatable('sentences', Examples)
