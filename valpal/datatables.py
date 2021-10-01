@@ -132,20 +132,22 @@ class Microroles(DataTable):
 
 
 class CodingSets(DataTable):
-    __constraints__ = [common.Language]
+    __constraints__ = [common.Contribution]
 
     def base_query(self, _):
         query = DBSession.query(models.CodingSet)\
-            .join(common.Language)
+            .join(common.Language)\
+            .join(models.LanguageContribution)\
+            .join(common.Contribution)
 
-        if self.language:
-            return query.filter(models.CodingSet.language == self.language)\
+        if self.contribution:
+            return query.filter(models.CodingSet.language == self.contribution.language)\
                 .order_by(models.CodingSet.name)
         else:
             return query.order_by(common.Language.name)
 
     def col_defs(self):
-        if self.language:
+        if self.contribution:
             return [
                 LinkCol(self, 'name', sTitle='Coding set'),
                 Col(self, 'codingframe_count', sTitle='# Coding frames'),
@@ -155,8 +157,9 @@ class CodingSets(DataTable):
         else:
             return [
                 LinkCol(
-                    self, 'language', model_col=common.Language.name,
-                    get_object=lambda o: o.language),
+                    self, 'contribution', model_col=common.Contribution.name,
+                    get_object=lambda o: o.language.contributions[0],
+                    label='Language'),
                 LinkCol(self, 'name', sTitle='Coding set'),
                 Col(self, 'codingframe_count', sTitle='# Coding frames'),
                 Col(self, 'verb_count', sTitle='# Verbs'),
