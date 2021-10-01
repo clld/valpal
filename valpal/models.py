@@ -113,7 +113,7 @@ class FormCodingFrameMicrorole(Base):
 
 @implementer(interfaces.IValue)
 class Form(CustomModelMixin, common.Value):
-    pk = Column(Integer, ForeignKey('value.pk'), primary_key=True) 
+    pk = Column(Integer, ForeignKey('value.pk'), primary_key=True)
     basic_codingframe_pk = Column(Integer, ForeignKey('codingframe.pk'))
     basic_codingframe = relationship('CodingFrame', backref='forms')
 
