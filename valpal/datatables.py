@@ -111,6 +111,15 @@ class Examples(datatables.Sentences):
         return cols
 
 
+class Concepts(DataTable):
+
+    def col_defs(self):
+        return [
+            LinkCol(self, 'name'),
+            Col(self, 'verb_count', sTitle='# Verbs'),
+        ]
+
+
 class Microroles(DataTable):
 
     def base_query(self, _):
@@ -361,6 +370,7 @@ def includeme(config):
     config.register_datatable('contributors', LangContributors)
     config.register_datatable('languages', Languages)
     config.register_datatable('sentences', Examples)
+    config.register_datatable('parameters', Concepts)
     config.register_datatable('microroles', Microroles)
     config.register_datatable('codingsets', CodingSets)
     config.register_datatable('codingframes', CodingFrames)

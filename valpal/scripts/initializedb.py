@@ -371,3 +371,14 @@ def prime_cache(args):
         codingset.codingframe_count = codingframes_per_codingset.get(codingset.pk) or 0
         codingset.verb_count = verbs_per_codingset.get(codingset.pk) or 0
         codingset.microrole_count = microroles_per_codingset.get(codingset.pk) or 0
+
+    verbs_per_concept = dict(
+        DBSession.query(
+            common.ValueSet.parameter_pk,
+            func.count(distinct(common.Value.pk)))
+        .where(common.Value.valueset_pk == common.ValueSet.pk)
+        .group_by(common.ValueSet.parameter_pk)
+        .all())
+
+    for concept in DBSession.query(models.Concept):
+        concept.verb_count = verbs_per_concept.get(concept.pk) or 0

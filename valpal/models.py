@@ -59,6 +59,8 @@ class Concept(CustomModelMixin, common.Parameter):
     pk = Column(Integer, ForeignKey('parameter.pk'), primary_key=True)
     concepticon_id = Column(Unicode)
 
+    verb_count = Column(Integer)
+
 
 @implementer(IMicrorole)
 class Microrole(Base, common.IdNameDescriptionMixin):
