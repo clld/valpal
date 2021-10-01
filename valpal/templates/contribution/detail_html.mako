@@ -71,10 +71,10 @@ ${util.data()}
             </div>
         </div>
         <div id="verbs" class="tab-pane">
-            ${request.get_datatable('values', m.Form, language=ctx.language).render()}
+            ${request.get_datatable('values', m.Form, contribution=ctx).render()}
         </div>
         <div id="codingframes" class="tab-pane">
-            ${request.get_datatable('codingframes', m.CodingFrame, language=ctx.language).render()}
+            ${request.get_datatable('codingframes', m.CodingFrame, contribution=ctx).render()}
         </div>
         <div id="codingsets" class="tab-pane">
             ${request.get_datatable('codingsets', m.CodingSet, contribution=ctx).render()}

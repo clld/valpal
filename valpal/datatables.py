@@ -167,26 +167,29 @@ class CodingSets(DataTable):
 
 
 class CodingFrames(DataTable):
-    __constraints__ = [common.Language]
+    __constraints__ = [common.Contribution]
 
     def base_query(self, _):
         query = DBSession.query(models.CodingFrame)\
-            .join(common.Language)
+            .join(common.Language)\
+            .join(models.LanguageContribution)\
+            .join(common.Contribution)
 
-        if self.language:
-            return query.filter(models.CodingFrame.language == self.language)\
+        if self.contribution:
+            return query.filter(models.CodingFrame.language == self.contribution.language)\
                 .order_by(models.CodingFrame.name)
         else:
-            return query.order_by(common.Language.name)
+            return query.order_by(common.Contribution.name)
 
     def col_defs(self):
-        if self.language:
+        if self.contribution:
             cols = []
         else:
             cols = [
                 LinkCol(
-                    self, 'language', model_col=common.Language.name,
-                    get_object=lambda o: o.language),
+                    self, 'contribution', model_col=common.Contribution.name,
+                    get_object=lambda o: o.language.contributions[0],
+                    label='Language'),
             ]
 
         # TODO verb count
@@ -202,18 +205,20 @@ class CodingFrames(DataTable):
 
 class Forms(DataTable):
 
-    __constraints__ = [common.Language, models.CodingFrame]
+    __constraints__ = [common.Contribution, models.CodingFrame]
 
     def base_query(self, query):
         query = query.outerjoin(common.ValueSet)\
+            .outerjoin(
+                models.LanguageContribution,
+                models.LanguageContribution.language_pk == common.ValueSet.language_pk)\
             .outerjoin(common.Parameter)\
-            .outerjoin(models.CodingFrame)
+            .outerjoin(
+                models.CodingFrame,
+                models.Form.basic_codingframe)
 
-        if self.language:
-            query = query.filter(common.ValueSet.language == self.language)
-        else:
-            query = query.outerjoin(common.ValueSet.language)
-
+        if self.contribution:
+            query = query.filter(common.ValueSet.language_pk == self.contribution.language_pk)
         if self.codingframe:
             query = query.filter(models.Form.basic_codingframe == self.codingframe)
 
@@ -222,11 +227,12 @@ class Forms(DataTable):
     def col_defs(self):
         columns = []
 
-        if not self.codingframe and not self.language:
+        if not self.codingframe and not self.contribution:
             columns.append(
                 LinkCol(
-                    self, 'language', model_col=common.Language.name,
-                    get_object=lambda o: o.valueset.language))
+                    self, 'contribution', model_col=common.Contribution.name,
+                    get_object=lambda o: o.valueset.language.contributions[0],
+                    label='Language'))
 
         columns.extend((
             LinkCol(self, 'value', sTitle='Verb form'),
