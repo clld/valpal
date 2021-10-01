@@ -11,12 +11,15 @@ in the following places:
 
 <ul>
   <li>
-    A released version on Zenodo:<br>
+    A released version on
+    ${h.external_link('https://zenodo.org', 'Zenodo')}
+    under the following DOI:<br>
     TODO
   </li>
   <li>
-    A ${h.external_link('https://git-scm.com/', 'git')} repository with the most
-    recent development version on GitHub:<br>
+    A
+    ${h.external_link('https://git-scm.com/', 'git')}
+    repository with the most recent development version on GitHub:<br>
     ${h.external_link('https://github.com/lexibank/valpal', 'https://github.com/lexibank/valpal')}
   </li>
 </ul>
