@@ -26,6 +26,22 @@ class GlottocodeCol(Col):
             title='Language information at Glottolog')
 
 
+class ConcepticonCol(Col):
+    __kw__ = {'bSearchable': False, 'bSortable': False}
+
+    def format(self, item):
+        if item.concepticon_id:
+            return external_link(
+                'https://concepticon.clld.org/parameters/{}'.format(
+                    item.concepticon_id),
+                label='{} [{}]'.format(
+                    item.concepticon_gloss,
+                    item.concepticon_id),
+                title='Concept at Concepticon')
+        else:
+            return ''
+
+
 class LanguageContributorsCol(Col):
 
     """Render links to the corresponding Contributors of a Language."""
@@ -116,6 +132,7 @@ class Concepts(DataTable):
     def col_defs(self):
         return [
             LinkCol(self, 'name'),
+            ConcepticonCol(self, 'concepticon_id'),
             Col(self, 'verb_count', sTitle='# Verbs'),
         ]
 

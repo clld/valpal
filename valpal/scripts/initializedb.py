@@ -109,11 +109,16 @@ def main(args):
     for rec in bibtex.Database.from_file(args.cldf.bibpath, lowercase=True):
         data.add(common.Source, rec.id, _obj=bibtex2source(rec))
 
-    for param in iteritems(args.cldf, 'ParameterTable', 'id', 'concepticonReference', 'name'):
+    for param in iteritems(
+        args.cldf, 'ParameterTable', 'id', 'concepticonReference', 'name',
+        'Concepticon_Gloss'
+    ):
         data.add(
             models.Concept,
             param['id'],
             id=param['id'],
+            concepticon_id=param['concepticonReference'],
+            concepticon_gloss=param['Concepticon_Gloss'],
             name='{} [{}]'.format(param['name'], param['id']),
         )
 
