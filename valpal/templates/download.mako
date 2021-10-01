@@ -20,3 +20,9 @@ in the following places:
     ${h.external_link('https://github.com/lexibank/valpal', 'https://github.com/lexibank/valpal')}
   </li>
 </ul>
+
+<p>
+Additionally, the source code for the web application can be found on GitHub
+under:
+${h.external_link('https://github.com/clld/valpal', 'https://github.com/clld/valpal')}
+</p>
