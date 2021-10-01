@@ -77,7 +77,7 @@ ${util.data()}
             ${request.get_datatable('codingframes', m.CodingFrame, language=ctx.language).render()}
         </div>
         <div id="codingsets" class="tab-pane">
-            ${request.get_datatable('codingsets', m.CodingSet, contribution=ctx.render()}
+            ${request.get_datatable('codingsets', m.CodingSet, contribution=ctx).render()}
         </div>
         <div id="alternations" class="tab-pane">
             ${request.get_datatable('alternations', m.Alternation, language=ctx.language).render()}
