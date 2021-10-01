@@ -144,7 +144,7 @@ class CodingSets(DataTable):
             return query.filter(models.CodingSet.language == self.contribution.language)\
                 .order_by(models.CodingSet.name)
         else:
-            return query.order_by(common.Language.name)
+            return query.order_by(common.Contribution.name)
 
     def col_defs(self):
         if self.contribution:
