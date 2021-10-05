@@ -126,6 +126,12 @@ def main(global_config, **settings):
 
     # unbreak links to the old webapp
 
+    config.add_301('/about/project', lambda req: req.route_url('project'))
+    config.add_301('/about/database', lambda req: req.route_url('database'))
+    config.add_301('/about/credits', lambda req: req.route_url('credits'))
+    config.add_301('/about/contact', lambda req: req.route_url('contact'))
+    config.add_301('/about/imprint', lambda req: req.route_url('legal'))
+
     config.add_301('/meanings', lambda req: req.route_url('parameters'))
     config.add_301(
         '/meanings/{cid}',
