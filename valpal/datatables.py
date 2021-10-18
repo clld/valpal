@@ -130,10 +130,15 @@ class Examples(datatables.Sentences):
     __constraints__ = [common.Contribution]
 
     def base_query(self, query):
-        return query\
+        query = query\
             .order_by(
                 models.Example.contribution_pk,
                 models.Example.number)
+
+        if self.contribution:
+            query = query.filter(models.Example.language_pk == self.contribution.language_pk)
+
+        return query
 
     def col_defs(self):
         if self.contribution:
@@ -184,7 +189,7 @@ class Microroles(DataTable):
         return [
             LinkCol(self, 'name'),
             LinkCol(
-                self, 'parameter', sTitle='Verb meaning',
+                self, 'parameter', sTitle='Verb Meaning',
                 model_col=common.Parameter.name,
                 get_object=lambda o: o.parameter),
             Col(self, 'role_letter', sTitle='Role'),
@@ -298,7 +303,8 @@ class Forms(DataTable):
             LinkCol(self, 'value', sTitle='Verb form'),
             LinkCol(
                 self, 'concept', model_col=common.Parameter.description,
-                get_object=lambda o: o.valueset.parameter),
+                get_object=lambda o: o.valueset.parameter,
+                sTitle='Verb Meaning'),
         ))
 
         # TODO list of microroles
@@ -394,7 +400,8 @@ class AlternationValues(DataTable):
         cols.extend((
             LinkCol(
                 self, 'concept', model_col=models.Concept.name,
-                get_object=lambda o: o.form.valueset.parameter),
+                get_object=lambda o: o.form.valueset.parameter,
+                sTitle='Verb Meaning'),
             LinkCol(
                 self, 'verb_form', model_col=models.Form.name,
                 get_object=lambda o: o.form),
