@@ -185,6 +185,10 @@ class Microroles(DataTable):
             .join(models.Concept)
 
     def col_defs(self):
+        role_choices = [
+            'A', 'X', 'P', 'S', 'T', 'L', 'I',
+            'E', 'M', 'Y', 'R', 'F', 'C', '?'
+        ]
         # TODO verb count
         # TODO coding frame count
         return [
@@ -193,8 +197,12 @@ class Microroles(DataTable):
                 self, 'parameter', sTitle='Verb Meaning',
                 model_col=common.Parameter.name,
                 get_object=lambda o: o.parameter),
-            Col(self, 'role_letter', sTitle='Role'),
-            Col(self, 'original_or_new', sTitle='Original or New'),
+            Col(self, 'role_letter', sTitle='Role', choices=role_choices),
+            Col(
+                self, 'original_or_new', sTitle='Original or New',
+                choices=[
+                    ('New role', 'New'),
+                    ('Original role', 'Original')]),
         ]
 
 
