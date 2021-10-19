@@ -131,6 +131,7 @@ class Examples(datatables.Sentences):
 
     def base_query(self, query):
         query = query\
+            .join(common.Contribution)\
             .order_by(
                 models.Example.contribution_pk,
                 models.Example.number)
