@@ -271,7 +271,7 @@ class CodingFrames(DataTable):
 
 class Forms(DataTable):
 
-    __constraints__ = [common.Contribution, models.CodingFrame]
+    __constraints__ = [common.Contribution, models.CodingFrame, common.Parameter]
 
     def base_query(self, query):
         query = query.outerjoin(common.ValueSet)\
@@ -283,6 +283,8 @@ class Forms(DataTable):
                 models.CodingFrame,
                 models.Form.basic_codingframe)
 
+        if self.parameter:
+            query = query.filter(common.ValueSet.parameter == self.parameter)
         if self.contribution:
             query = query.filter(common.ValueSet.language_pk == self.contribution.language_pk)
         if self.codingframe:
@@ -300,13 +302,12 @@ class Forms(DataTable):
                     get_object=lambda o: o.valueset.language.contributions[0],
                     label='Language'))
 
-        columns.extend((
-            LinkCol(self, 'value', sTitle='Verb form'),
-            LinkCol(
+        columns.append(LinkCol(self, 'value', sTitle='Verb form'))
+        if not self.parameter:
+            columns.append(LinkCol(
                 self, 'concept', model_col=common.Parameter.description,
                 get_object=lambda o: o.valueset.parameter,
-                sTitle='Verb Meaning'),
-        ))
+                sTitle='Verb Meaning'))
 
         # TODO list of microroles
         if not self.codingframe:
