@@ -1,3 +1,4 @@
+from sqlalchemy import desc
 from sqlalchemy.orm import aliased, joinedload, subqueryload
 
 from clld.db.meta import DBSession
@@ -182,7 +183,11 @@ class Microroles(DataTable):
 
     def base_query(self, _):
         return DBSession.query(models.Microrole)\
-            .join(models.Concept)
+            .join(models.Concept)\
+            .order_by(
+                models.Concept.name,
+                desc(models.Microrole.original_or_new),
+                models.Microrole.role_letter)
 
     def col_defs(self):
         role_choices = [
