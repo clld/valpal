@@ -313,6 +313,7 @@ def main(args):
         data.add(
             models.AlternationValue,
             row['id'],
+            id=row['id'],
             alternation=alternation,
             form=form,
             derived_codingframe=codingframe,
