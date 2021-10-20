@@ -17,6 +17,7 @@
 % endif
 
 <p><b>${_('Parameter')}</b>: ${h.link(request, ctx.valueset.parameter)}</p>
+<p><b>Coding frame</b>: ${h.link(request, ctx.basic_codingframe)}</p>
 % if ctx.comment:
 <p><b>Comment</b>: ${ctx.comment}</p>
 % endif
