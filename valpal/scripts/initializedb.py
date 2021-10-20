@@ -203,7 +203,7 @@ def main(args):
     for form in iteritems(
         args.cldf, 'FormTable',
         'id', 'form', 'languageReference', 'parameterReference', 'source',
-        'Basic_Coding_Frame_ID'
+        'Basic_Coding_Frame_ID', 'comment'
     ):
         vsid = (form['languageReference'], form['parameterReference'])
         vs = data['ValueSet'].get(vsid)
@@ -226,6 +226,7 @@ def main(args):
             name=form['form'],
             basic_codingframe=data['CodingFrame'][form['Basic_Coding_Frame_ID']],
             valueset=vs,
+            comment=form['comment'],
         )
 
     for (vsid, source_id), pages in refs.items():

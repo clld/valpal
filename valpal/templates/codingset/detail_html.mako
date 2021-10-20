@@ -5,7 +5,11 @@
 
 <h2>Coding set ‘${ctx.name}’ of ${ctx.language.name}</h2>
 
-<p>Coding frames:<p>
+% if ctx.comment:
+<p><b>Comment</b>: ${ctx.comment}</p>
+% endif
+
+<p><b>Coding frames</b>:<p>
 
 <ul>
   % for cf in sorted({i.codingframe for i in ctx.index_numbers}, key=lambda f: f.name):

@@ -14,6 +14,10 @@
 
 <p><b>Schema</b>: ${ctx.name}</p>
 
+% if ctx.comment:
+<p><b>Comment</b>: ${ctx.comment}</p>
+% endif
+
 % if ctx.derived == 'Derived':
 <%
     basic_coding_frame_alias = aliased(m.CodingFrame)

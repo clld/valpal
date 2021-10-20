@@ -120,6 +120,7 @@ class Form(CustomModelMixin, common.Value):
     pk = Column(Integer, ForeignKey('value.pk'), primary_key=True)
     basic_codingframe_pk = Column(Integer, ForeignKey('codingframe.pk'))
     basic_codingframe = relationship('CodingFrame', backref='forms')
+    comment = Column(Unicode)
 
 
 @implementer(IAlternation)

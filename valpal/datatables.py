@@ -232,6 +232,7 @@ class CodingSets(DataTable):
                 Col(self, 'codingframe_count', sTitle='# Coding frames'),
                 Col(self, 'verb_count', sTitle='# Verbs'),
                 Col(self, 'microrole_count', sTitle='# Microroles'),
+                Col(self, 'comment', bSortable=False),
             ]
         else:
             return [
@@ -242,6 +243,7 @@ class CodingSets(DataTable):
                 LinkCol(self, 'name', sTitle='Coding set'),
                 Col(self, 'codingframe_count', sTitle='# Coding frames'),
                 Col(self, 'verb_count', sTitle='# Verbs'),
+                Col(self, 'comment', bSortable=False),
             ]
 
 
@@ -277,6 +279,7 @@ class CodingFrames(DataTable):
         cols.extend((
             LinkCol(self, 'name', sTitle='Coding frame'),
             Col(self, 'derived', sTitle='Type', choices=['Basic', 'Derived']),
+            Col(self, 'comment', bSortable=False),
         ))
 
         return cols
@@ -330,6 +333,8 @@ class Forms(DataTable):
                     sTitle='Basic coding frame',
                     model_col=models.CodingFrame.name,
                     get_object=lambda o: o.basic_codingframe))
+
+        columns.append(Col(self, 'comment', bSortable=False))
 
         return columns
 
@@ -435,7 +440,7 @@ class AlternationValues(DataTable):
                     sTitle='Occurs', choices=['Never', 'Regularly', 'No data', 'Marginally']),
             ))
 
-        cols.append(Col(self, 'comment'))
+        cols.append(Col(self, 'comment', bSortable=False))
 
         return cols
 
