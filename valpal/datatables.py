@@ -435,6 +435,8 @@ class AlternationValues(DataTable):
                     sTitle='Occurs', choices=['Never', 'Regularly', 'No data', 'Marginally']),
             ))
 
+        cols.append(Col(self, 'comment'))
+
         return cols
 
 
