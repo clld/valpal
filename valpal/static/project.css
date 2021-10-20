@@ -130,3 +130,8 @@ ol.datatable-ex
 {
     padding-right: 1ex;
 }
+#verb-infobox
+{
+    float: right;
+    width: 40ex;
+}
