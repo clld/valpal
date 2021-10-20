@@ -78,7 +78,7 @@
     % else:
     <td></td>
     % endif
-    <td>${index_number.argument_type}</td>
+    <td>${index_number.argument_type if index_number.argument_type else ''}</td>
   </tr>
   % endfor
 </tbody>
