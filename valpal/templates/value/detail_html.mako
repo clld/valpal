@@ -24,17 +24,20 @@
 
 % if ctx.sentence_assocs:
 <h3>${_('Sentences')}</h3>
-<ol>
-    % for a in ctx.sentence_assocs:
-    <li>
-        % if a.description:
-        <p>${a.description}</p>
-        % endif
-        ${h.rendered_sentence(a.sentence)}
-        % if a.sentence.references:
-        <p>See ${h.linked_references(request, a.sentence)|n}</p>
-        % endif
-    </li>
-    % endfor
-</ol>
+<table class="example-list">
+  % for a in ctx.sentence_assocs:
+  <tr>
+    <td>(${h.link(request, a.sentence, label=a.sentence.number)})</td>
+    <td>
+      % if a.description:
+      <p>${a.description}</p>
+      % endif
+      ${h.rendered_sentence(a.sentence)}
+      % if a.sentence.references:
+      <p>See ${h.linked_references(request, a.sentence)|n}</p>
+      % endif
+    </td>
+  </tr>
+  % endfor
+</table>
 % endif

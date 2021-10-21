@@ -135,3 +135,19 @@ ol.datatable-ex
     float: right;
     width: 40ex;
 }
+
+table.example-list td
+{
+    vertical-align: baseline;
+    padding-left: 1ex;
+    padding-right: 1ex;
+}
+table.example-list td + td
+{
+    padding-left: 0;
+    padding-right: 0;
+}
+table.example-list tr + tr
+{
+    padding-top: 1ex;
+}
