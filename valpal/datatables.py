@@ -1,3 +1,5 @@
+import html
+
 from sqlalchemy import desc
 from sqlalchemy.orm import aliased, joinedload, subqueryload
 
@@ -18,6 +20,12 @@ from clld_glottologfamily_plugin.models import Family
 from clld_glottologfamily_plugin.datatables import FamilyCol
 
 from valpal import models
+
+
+class PlainTextCol(Col):
+    def format(self, item):
+        item = self.get_obj(item)
+        return html.escape(super().format(item))
 
 
 class GlottocodeCol(Col):
@@ -232,7 +240,7 @@ class CodingSets(DataTable):
                 Col(self, 'codingframe_count', sTitle='# Coding frames'),
                 Col(self, 'verb_count', sTitle='# Verbs'),
                 Col(self, 'microrole_count', sTitle='# Microroles'),
-                Col(self, 'comment', bSortable=False),
+                PlainTextCol(self, 'comment', bSortable=False),
             ]
         else:
             return [
@@ -243,7 +251,7 @@ class CodingSets(DataTable):
                 LinkCol(self, 'name', sTitle='Coding set'),
                 Col(self, 'codingframe_count', sTitle='# Coding frames'),
                 Col(self, 'verb_count', sTitle='# Verbs'),
-                Col(self, 'comment', bSortable=False),
+                PlainTextCol(self, 'comment', bSortable=False),
             ]
 
 
@@ -279,7 +287,7 @@ class CodingFrames(DataTable):
         cols.extend((
             LinkCol(self, 'name', sTitle='Coding frame'),
             Col(self, 'derived', sTitle='Type', choices=['Basic', 'Derived']),
-            Col(self, 'comment', bSortable=False),
+            PlainTextCol(self, 'comment', bSortable=False),
         ))
 
         return cols
@@ -334,7 +342,7 @@ class Forms(DataTable):
                     model_col=models.CodingFrame.name,
                     get_object=lambda o: o.basic_codingframe))
 
-        columns.append(Col(self, 'comment', bSortable=False))
+        columns.append(PlainTextCol(self, 'comment', bSortable=False))
 
         return columns
 
@@ -368,7 +376,7 @@ class Alternations(DataTable):
             Col(
                 self, 'alternation_type',
                 sTitle='Type', choices=['Coded', 'Uncoded']),
-            Col(self, 'description'),
+            PlainTextCol(self, 'description'),
         ))
 
         return cols
@@ -440,7 +448,7 @@ class AlternationValues(DataTable):
                     sTitle='Occurs', choices=['Never', 'Regularly', 'No data', 'Marginally']),
             ))
 
-        cols.append(Col(self, 'comment', bSortable=False))
+        cols.append(PlainTextCol(self, 'comment', bSortable=False))
 
         return cols
 
