@@ -32,7 +32,10 @@
       % if a.description:
       <p>${a.description}</p>
       % endif
-      ${h.rendered_sentence(a.sentence)}
+      <p>${h.rendered_sentence(a.sentence)}</p>
+      % if a.sentence.comment:
+      <p><i>Comment</i>: ${a.sentence.comment}</p>
+      % endif
       % if a.sentence.references:
       <p>See ${h.linked_references(request, a.sentence)|n}</p>
       % endif
