@@ -104,7 +104,7 @@ def main(global_config, **settings):
         ('alternations', partial(menu_item, 'alternations', label='All alternations')),
     )
 
-    config.registry.registerUtility(LanguageByFamilyMapMarker(), IMapMarker)
+    #config.registry.registerUtility(LanguageByFamilyMapMarker(), IMapMarker)
 
     config.register_resource(
         'microrole', models.Microrole, interfaces.IMicrorole, with_index=True)
