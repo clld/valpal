@@ -1,5 +1,6 @@
 <%inherit file="../${context.get('request').registry.settings.get('clld.app_template', 'app.mako')}"/>
 <%namespace name="util" file="../util.mako"/>
+<%namespace name="vutil" file="../valpal_util.mako"/>
 <%! active_menu_item = "contributions" %>
 
 
@@ -24,23 +25,5 @@
 
 % if ctx.sentence_assocs:
 <h3>${_('Sentences')}</h3>
-<table class="example-list">
-  % for a in ctx.sentence_assocs:
-  <tr>
-    <td>(${h.link(request, a.sentence, label=a.sentence.number)})</td>
-    <td>
-      % if a.description:
-      <p>${a.description}</p>
-      % endif
-      <p>${h.rendered_sentence(a.sentence)}</p>
-      % if a.sentence.comment:
-      <p><i>Comment</i>: ${a.sentence.comment}</p>
-      % endif
-      % if a.sentence.references:
-      <p>See ${h.linked_references(request, a.sentence)|n}</p>
-      % endif
-    </td>
-  </tr>
-  % endfor
-</table>
+${vutil.sentence_list([a.sentence for a in ctx.sentence_assocs])}
 % endif
