@@ -11,7 +11,7 @@
         <ul>
             % for value in valueset.values:
             <li>
-                ${h.link(request, valueset, label=str(value))}
+                ${h.link(request, value, label=str(value))}
                 ${h.format_frequency(request, value)}
             </li>
             % endfor
