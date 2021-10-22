@@ -215,7 +215,7 @@ def main(args):
                 id='-'.join(vsid),
                 language=data['Variety'][form['languageReference']],
                 parameter=data['Concept'][form['parameterReference']],
-                contribution=contrib,
+                contribution=data['LanguageContribution'][form['languageReference']],
             )
         for ref in form.get('source', []):
             source_id, pages = Sources.parse(ref)
