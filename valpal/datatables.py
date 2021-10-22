@@ -180,7 +180,7 @@ class Examples(datatables.Sentences):
                 'description',
                 sTitle=self.req.translate('Translation'),
                 sClass="translation"),
-            TypeCol(self, 'type'),
+            PlainTextCol(self, 'comment', bSortable=False),
             DetailsRowLinkCol(self, 'd'),
         ))
 
