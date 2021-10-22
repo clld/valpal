@@ -1,51 +1,51 @@
-#: valpal/__init__.py:17
+#: valpal/__init__.py:58
 msgid "Parameter"
 msgstr "Verb meaning"
 
-#: valpal/__init__.py:18
+#: valpal/__init__.py:59
 msgid "Parameters"
 msgstr "Verb meanings"
 
-#: valpal/__init__.py:19
+#: valpal/__init__.py:60
 msgid "Contribution"
 msgstr "Language"
 
-#: valpal/__init__.py:20
+#: valpal/__init__.py:61
 msgid "Contributions"
 msgstr "Languages"
 
-#: valpal/__init__.py:21
+#: valpal/__init__.py:62
 msgid "Contributor"
 msgstr ""
 
-#: valpal/__init__.py:22
+#: valpal/__init__.py:63
 msgid "Contributors"
 msgstr ""
 
-#: valpal/__init__.py:23
+#: valpal/__init__.py:64
 msgid "Sentence"
 msgstr "Example"
 
-#: valpal/__init__.py:24
+#: valpal/__init__.py:65
 msgid "Sentences"
 msgstr "Examples"
 
-#: valpal/__init__.py:25
+#: valpal/__init__.py:66
 msgid "Value Set"
 msgstr ""
 
-#: valpal/__init__.py:26
+#: valpal/__init__.py:67
 msgid "Value"
 msgstr "Verb form"
 
-#: valpal/__init__.py:27
+#: valpal/__init__.py:68
 msgid "Values"
 msgstr "Verb forms"
 
-#: valpal/__init__.py:28
+#: valpal/__init__.py:69
 msgid "Address"
 msgstr ""
 
-#: valpal/__init__.py:29
+#: valpal/__init__.py:70
 msgid "Datapoints"
 msgstr "Verb forms"

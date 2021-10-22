@@ -1,0 +1,70 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-10-22 14:56+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: valpal/__init__.py:58
+msgid "Parameter"
+msgstr ""
+
+#: valpal/__init__.py:59
+msgid "Parameters"
+msgstr ""
+
+#: valpal/__init__.py:60
+msgid "Contribution"
+msgstr ""
+
+#: valpal/__init__.py:61
+msgid "Contributions"
+msgstr ""
+
+#: valpal/__init__.py:62
+msgid "Contributor"
+msgstr ""
+
+#: valpal/__init__.py:63
+msgid "Contributors"
+msgstr ""
+
+#: valpal/__init__.py:64
+msgid "Sentence"
+msgstr ""
+
+#: valpal/__init__.py:65
+msgid "Sentences"
+msgstr ""
+
+#: valpal/__init__.py:66
+msgid "Value Set"
+msgstr ""
+
+#: valpal/__init__.py:67
+msgid "Value"
+msgstr ""
+
+#: valpal/__init__.py:68
+msgid "Values"
+msgstr ""
+
+#: valpal/__init__.py:69
+msgid "Address"
+msgstr ""
+
+#: valpal/__init__.py:70
+msgid "Datapoints"
+msgstr ""
