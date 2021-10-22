@@ -37,6 +37,16 @@ class GlottocodeCol(Col):
             title='Language information at Glottolog')
 
 
+class MapLessFamilyCol(FamilyCol):
+    def format(self, item):
+        item = self.get_obj(item)
+        if item.family:
+            label = link(self.dt.req, item.family) if self._link else item.family.name
+        else:
+            label = 'isolate'
+        return label
+
+
 class ConcepticonCol(Col):
     __kw__ = {'bSearchable': False, 'bSortable': False}
 
@@ -109,7 +119,7 @@ class Contributions(DataTable):
             GlottocodeCol(
                 self, 'id', sTitle='Glottocode',
                 get_object=lambda i: i.language),
-            FamilyCol(
+            MapLessFamilyCol(
                 self, 'Family', models.Variety,
                 get_object=lambda i: i.language),
             Col(self,
