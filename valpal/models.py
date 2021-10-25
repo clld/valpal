@@ -105,6 +105,17 @@ class CodingFrameIndexNumber(Base):
     argument_type = Column(Unicode)
 
 
+class CodingFrameExample(Base):
+    codingframe_pk = Column(Integer, ForeignKey('codingframe.pk'))
+    codingframe = relationship('CodingFrame')
+
+    value_pk = Column(Integer, ForeignKey('value.pk'))
+    value = relationship('Value')
+
+    sentence_pk = Column(Integer, ForeignKey('sentence.pk'))
+    sentence = relationship('Sentence')
+
+
 class FormCodingFrameMicrorole(Base):
     form_pk = Column(Integer, ForeignKey('form.pk'))
     form = relationship('Form')

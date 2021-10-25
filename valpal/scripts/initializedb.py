@@ -277,6 +277,16 @@ def main(args):
                 source=source))
 
     for row in iteritems(
+        args.cldf, 'coding-frame-examples.csv',
+        'formReference', 'Coding_Frame_ID', 'exampleReference'
+    ):
+        for example_id in row['exampleReference']:
+            DBSession.add(models.CodingFrameExample(
+                codingframe=data['CodingFrame'][row['Coding_Frame_ID']],
+                value=data['Form'][row['formReference']],
+                sentence=data['Example'][example_id]))
+
+    for row in iteritems(
         args.cldf, 'coding-frame-index-numbers.csv',
         'id', 'Coding_Frame_ID', 'Coding_Set_ID', 'Index_Number',
         'Argument_Type'
