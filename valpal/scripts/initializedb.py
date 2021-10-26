@@ -338,6 +338,16 @@ def main(args):
     DBSession.flush()
 
     for row in iteritems(
+        args.cldf, 'coding-frame-index-numbers.csv',
+        'id', 'Microrole_IDs',
+    ):
+        for role_id in row['Microrole_IDs']:
+            DBSession.add(models.CodingFrameIndexNumberMicrorole(
+                index_number=data['CodingFrameIndexNumber'][row['id']],
+                microrole=data['Microrole'][role_id]))
+
+
+    for row in iteritems(
         args.cldf,
         'alternation-values.csv', 'id', 'exampleReference'
     ):

@@ -1,5 +1,5 @@
 <%inherit file="../${context.get('request').registry.settings.get('clld.app_template', 'app.mako')}"/>
-<% from sqlalchemy.sql.expression import select %>
+<% from sqlalchemy.sql.expression import or_ %>
 <% from clld.db.meta import DBSession %>
 <% import valpal.models as m %>
 <%namespace name="util" file="../util.mako"/>
@@ -24,8 +24,42 @@
 <p><b>Comment</b>: ${ctx.comment}</p>
 % endif
 
+
 <h3>Basic coding frame</h3>
 <p><b>Schema</b>: ${h.link(request, ctx.basic_codingframe)}</p>
+
+<%
+    query = DBSession.query(
+        m.CodingFrameIndexNumber,
+        m.CodingFrameIndexNumberMicrorole)\
+        .filter(m.CodingFrameIndexNumber.codingframe_pk == ctx.basic_codingframe_pk)\
+        .join(m.CodingSet, isouter=True)\
+        .join(m.CodingFrameIndexNumberMicrorole, isouter=True)\
+        .join(m.Microrole, isouter=True)\
+        .filter(or_(
+            m.CodingFrameIndexNumberMicrorole.pk == None,
+            m.Microrole.parameter_pk == ctx.valueset.parameter_pk))
+%>
+% if query:
+<table class="table table-bordered" style="width:auto">
+<thead>
+    <th>#</th>
+    <th>Microrole</th>
+    <th>Coding set</th>
+    <th>Argument type</th>
+</thead>
+<tbody>
+  % for index_number, microrole_assoc in query:
+  <tr>
+    <td>${index_number.index_number}</td>
+    <td>${h.link(request, microrole_assoc.microrole) if microrole_assoc else ''}</td>
+    <td>${h.link(request, index_number.codingset) if index_number.codingset else ''}</td>
+    <td>${index_number.argument_type or ''}</td>
+  </tr>
+  % endfor
+</tbody>
+</table>
+% endif
 
 <%
     example_query = DBSession.query(m.Example)\
@@ -36,6 +70,6 @@
         .order_by(m.Example.number)
 %>
 % if example_query:
-<h4>${_('Sentences')}</h4>
+<b>${_('Sentences')}</b>:
 ${vutil.sentence_list(example_query)}
 % endif

@@ -105,6 +105,13 @@ class CodingFrameIndexNumber(Base):
     argument_type = Column(Unicode)
 
 
+class CodingFrameIndexNumberMicrorole(Base):
+    index_number_pk = Column(Integer, ForeignKey('codingframeindexnumber.pk'))
+    index_number = relationship('CodingFrameIndexNumber', backref='microrole_assocs')
+    microrole_pk = Column(Integer, ForeignKey('microrole.pk'))
+    microrole = relationship('Microrole')
+
+
 class CodingFrameExample(Base):
     codingframe_pk = Column(Integer, ForeignKey('codingframe.pk'))
     codingframe = relationship('CodingFrame')
