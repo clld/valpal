@@ -28,6 +28,15 @@ class PlainTextCol(Col):
         return html.escape(super().format(item))
 
 
+class LinkToSelfCol(Col):
+    __kw__ = {'bSearchable': False, 'bSortable': False}
+
+    def format(self, item):
+        item = self.get_obj(item)
+        return '<span class="link-to-self">{}</span>'.format(
+            link(self.dt.req, item, label='Details'))
+
+
 class GlottocodeCol(Col):
     def format(self, item):
         item = self.get_obj(item)
@@ -458,7 +467,9 @@ class AlternationValues(DataTable):
                     sTitle='Occurs', choices=['Never', 'Regularly', 'No data', 'Marginally']),
             ))
 
-        cols.append(PlainTextCol(self, 'comment', bSortable=False))
+        cols.extend((
+            PlainTextCol(self, 'comment', bSortable=False),
+            LinkToSelfCol(self, 'details', sTitle='')))
 
         return cols
 
