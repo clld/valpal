@@ -20,17 +20,17 @@
 
 % if ctx.derived == 'Derived':
 <%
-    basic_coding_frame_alias = aliased(m.CodingFrame)
-    derived_coding_frame_alias = aliased(m.CodingFrame)
+    basic_codingframe_alias = aliased(m.CodingFrame)
+    derived_codingframe_alias = aliased(m.CodingFrame)
     alternation_values = list(
         DBSession.query(m.AlternationValue)
         .join(m.AlternationValue.alternation, isouter=True)
         .join(
-            derived_coding_frame_alias,
+            derived_codingframe_alias,
             m.AlternationValue.derived_codingframe,
             isouter=True)
         .join(m.AlternationValue.verb, isouter=True)
-        .join(basic_coding_frame_alias, m.Verb.basic_codingframe, isouter=True)
+        .join(basic_codingframe_alias, m.Verb.basic_codingframe, isouter=True)
         .filter(m.AlternationValue.derived_codingframe == ctx)
         .order_by(m.Alternation.pk)
         .distinct(m.Alternation.pk))
