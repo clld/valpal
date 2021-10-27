@@ -111,15 +111,18 @@ def main(args):
 
     for param in iteritems(
         args.cldf, 'ParameterTable', 'id', 'concepticonReference', 'name',
-        'Concepticon_Gloss'
+        'Concepticon_Gloss', 'typical_context', 'role_frame', 'meaning_list'
     ):
         data.add(
             models.VerbMeaning,
             param['id'],
             id=param['id'],
+            name='{} [{}]'.format(param['name'], param['id']),
             concepticon_id=param['concepticonReference'],
             concepticon_gloss=param['Concepticon_Gloss'],
-            name='{} [{}]'.format(param['name'], param['id']),
+            typical_context=param.get('typical_context'),
+            role_frame=param.get('role_frame'),
+            meaning_list=param.get('meaning_list'),
         )
 
     load_families(

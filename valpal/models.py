@@ -61,6 +61,10 @@ class VerbMeaning(CustomModelMixin, common.Parameter):
     concepticon_id = Column(Unicode)
     concepticon_gloss = Column(Unicode)
 
+    typical_context = Column(Unicode)
+    role_frame = Column(Unicode)
+    meaning_list = Column(Unicode)
+
     verb_count = Column(Integer)
 
 

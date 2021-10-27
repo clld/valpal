@@ -11,6 +11,32 @@
 <p>${ctx.description}</p>
 % endif
 
+% if ctx.meaning_list:
+<p>
+<b>Meaning list</b>:
+${ctx.meaning_list}
+</p>
+% endif
+% if ctx.typical_context:
+<p>
+<b>Typical context</b>:
+${ctx.typical_context}
+</p>
+% endif
+% if ctx.role_frame:
+<p>
+<b>Role frame</b>:
+${ctx.role_frame}
+</p>
+% endif
+% if ctx.microroles:
+<p>
+<b>Microroles</b>:
+${', '.join(h.link(request, m) for m in ctx.microroles) | n}
+% endif
+
+</p>
+
 <div style="clear: both"/>
 % if map_ or request.map:
 ${(map_ or request.map).render()}
