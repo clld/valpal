@@ -29,18 +29,18 @@
 <p><b>Schema</b>: ${h.link(request, ctx.basic_codingframe)}</p>
 
 <%
-    query = DBSession.query(
+    index_numbers = list(DBSession.query(
         m.CodingFrameIndexNumber,
-        m.CodingFrameIndexNumberMicrorole)\
-        .filter(m.CodingFrameIndexNumber.codingframe_pk == ctx.basic_codingframe_pk)\
-        .join(m.CodingSet, isouter=True)\
-        .join(m.CodingFrameIndexNumberMicrorole, isouter=True)\
-        .join(m.Microrole, isouter=True)\
+        m.CodingFrameIndexNumberMicrorole)
+        .filter(m.CodingFrameIndexNumber.codingframe_pk == ctx.basic_codingframe_pk)
+        .join(m.CodingSet, isouter=True)
+        .join(m.CodingFrameIndexNumberMicrorole, isouter=True)
+        .join(m.Microrole, isouter=True)
         .filter(or_(
             m.CodingFrameIndexNumberMicrorole.pk == None,
-            m.Microrole.parameter_pk == ctx.valueset.parameter_pk))
+            m.Microrole.parameter_pk == ctx.valueset.parameter_pk)))
 %>
-% if query:
+% if index_numbers:
 <table class="table table-bordered" style="width:auto">
 <thead>
     <th>#</th>
@@ -49,7 +49,7 @@
     <th>Argument type</th>
 </thead>
 <tbody>
-  % for index_number, microrole_assoc in query:
+  % for index_number, microrole_assoc in index_numbers:
   <tr>
     <td>${index_number.index_number}</td>
     <td>${h.link(request, microrole_assoc.microrole) if microrole_assoc else ''}</td>
@@ -62,14 +62,14 @@
 % endif
 
 <%
-    example_query = DBSession.query(m.Example)\
-        .join(m.CodingFrameExample)\
+    examples = list(DBSession.query(m.Example)
+        .join(m.CodingFrameExample)
         .filter(
             m.CodingFrameExample.codingframe_pk == ctx.basic_codingframe_pk,
-            m.CodingFrameExample.value_pk == ctx.pk)\
-        .order_by(m.Example.number)
+            m.CodingFrameExample.value_pk == ctx.pk)
+        .order_by(m.Example.number))
 %>
-% if example_query:
+% if examples:
 <b>${_('Sentences')}</b>:
-${vutil.sentence_list(example_query)}
+${vutil.sentence_list(examples)}
 % endif

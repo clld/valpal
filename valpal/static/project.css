@@ -161,3 +161,10 @@ table.example-list td:first-child
     color: #fff;
     background-image: linear-gradient(to bottom, #2796a5, #1d717c);
 }
+
+span.altval-codingframe-arrow {
+    padding: 1ex;
+    color: gray;
+    font-size: 150%;
+    font-weight: bold;
+}
