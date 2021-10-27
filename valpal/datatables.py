@@ -187,7 +187,7 @@ class Examples(datatables.Sentences):
         return cols
 
 
-class Concepts(DataTable):
+class VerbMeanings(DataTable):
 
     def col_defs(self):
         return [
@@ -201,9 +201,9 @@ class Microroles(DataTable):
 
     def base_query(self, _):
         return DBSession.query(models.Microrole)\
-            .join(models.Concept)\
+            .join(models.VerbMeaning)\
             .order_by(
-                models.Concept.name,
+                models.VerbMeaning.name,
                 desc(models.Microrole.original_or_new),
                 models.Microrole.role_letter)
 
@@ -303,7 +303,7 @@ class CodingFrames(DataTable):
         return cols
 
 
-class Forms(DataTable):
+class Verbs(DataTable):
 
     __constraints__ = [common.Contribution, models.CodingFrame, common.Parameter]
 
@@ -315,14 +315,14 @@ class Forms(DataTable):
             .outerjoin(common.Parameter)\
             .outerjoin(
                 models.CodingFrame,
-                models.Form.basic_codingframe)
+                models.Verb.basic_codingframe)
 
         if self.parameter:
             query = query.filter(common.ValueSet.parameter == self.parameter)
         if self.contribution:
             query = query.filter(common.ValueSet.language_pk == self.contribution.language_pk)
         if self.codingframe:
-            query = query.filter(models.Form.basic_codingframe == self.codingframe)
+            query = query.filter(models.Verb.basic_codingframe == self.codingframe)
 
         return query.order_by(common.ValueSet.id)
 
@@ -339,7 +339,7 @@ class Forms(DataTable):
         columns.append(LinkCol(self, 'value', sTitle='Verb form'))
         if not self.parameter:
             columns.append(LinkCol(
-                self, 'concept', model_col=common.Parameter.name,
+                self, 'meaning', model_col=common.Parameter.name,
                 get_object=lambda o: o.valueset.parameter,
                 sTitle='Verb Meaning'))
 
@@ -399,12 +399,12 @@ class AlternationValues(DataTable):
         basic_coding_frame_alias = aliased(models.CodingFrame)
         derived_coding_frame_alias = aliased(models.CodingFrame)
         query = DBSession.query(models.AlternationValue)\
-            .join(models.Form, isouter=True)\
+            .join(models.Verb, isouter=True)\
             .join(common.ValueSet, isouter=True)\
-            .join(models.Concept, isouter=True)\
+            .join(models.VerbMeaning, isouter=True)\
             .join(
                 basic_coding_frame_alias,
-                models.Form.basic_codingframe,
+                models.Verb.basic_codingframe,
                 isouter=True)\
             .join(
                 derived_coding_frame_alias,
@@ -437,15 +437,15 @@ class AlternationValues(DataTable):
 
         cols.extend((
             LinkCol(
-                self, 'concept', model_col=models.Concept.name,
-                get_object=lambda o: o.form.valueset.parameter,
+                self, 'meaning', model_col=models.VerbMeaning.name,
+                get_object=lambda o: o.verb.valueset.parameter,
                 sTitle='Verb Meaning'),
             LinkCol(
-                self, 'verb_form', model_col=models.Form.name,
-                get_object=lambda o: o.form),
+                self, 'verb_form', model_col=models.Verb.name,
+                get_object=lambda o: o.verb),
             LinkCol(
                 self, 'basic_coding_frame', model_col=models.CodingFrame.name,
-                get_object=lambda o: o.form.basic_codingframe),
+                get_object=lambda o: o.verb.basic_codingframe),
         ))
 
         if not self.codingframe:
@@ -470,10 +470,10 @@ def includeme(config):
     config.register_datatable('contributors', LangContributors)
     config.register_datatable('languages', Languages)
     config.register_datatable('sentences', Examples)
-    config.register_datatable('parameters', Concepts)
+    config.register_datatable('parameters', VerbMeanings)
     config.register_datatable('microroles', Microroles)
     config.register_datatable('codingsets', CodingSets)
     config.register_datatable('codingframes', CodingFrames)
-    config.register_datatable('values', Forms)
+    config.register_datatable('values', Verbs)
     config.register_datatable('alternations', Alternations)
     config.register_datatable('alternationvalues', AlternationValues)

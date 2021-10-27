@@ -29,8 +29,8 @@
             derived_coding_frame_alias,
             m.AlternationValue.derived_codingframe,
             isouter=True)
-        .join(m.AlternationValue.form, isouter=True)
-        .join(basic_coding_frame_alias, m.Form.basic_codingframe, isouter=True)
+        .join(m.AlternationValue.verb, isouter=True)
+        .join(basic_coding_frame_alias, m.Verb.basic_codingframe, isouter=True)
         .filter(m.AlternationValue.derived_codingframe == ctx)
         .order_by(m.Alternation.pk)
         .distinct(m.Alternation.pk))
@@ -43,7 +43,7 @@
 <tr><th>Basic coding frame</th><th>via</th></tr>
 %     for val in alternation_values:
   <tr>
-    <td>${h.link(request, val.form.basic_codingframe)}</td>
+    <td>${h.link(request, val.verb.basic_codingframe)}</td>
     <td>${h.link(request, val.alternation)}</td>
   </tr>
 %     endfor
@@ -97,6 +97,6 @@ ${request.get_datatable('alternationvalues', m.AlternationValue, codingframe=ctx
 <h3>Verb forms with this basic coding frame</h3>
 
 ## TODO table: | Microrole 1 | Microrole 2 | Microrole 3 |
-${request.get_datatable('values', m.Form, codingframe=ctx).render()}
+${request.get_datatable('values', m.Verb, codingframe=ctx).render()}
 
 % endif

@@ -71,7 +71,7 @@ ${util.data()}
             </div>
         </div>
         <div id="verbs" class="tab-pane">
-            ${request.get_datatable('values', m.Form, contribution=ctx).render()}
+            ${request.get_datatable('values', m.Verb, contribution=ctx).render()}
         </div>
         <div id="codingframes" class="tab-pane">
             ${request.get_datatable('codingframes', m.CodingFrame, contribution=ctx).render()}

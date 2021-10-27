@@ -114,7 +114,7 @@ def main(args):
         'Concepticon_Gloss'
     ):
         data.add(
-            models.Concept,
+            models.VerbMeaning,
             param['id'],
             id=param['id'],
             concepticon_id=param['concepticonReference'],
@@ -142,7 +142,7 @@ def main(args):
             name=row['name'],
             role_letter=row['Role_Letter'],
             original_or_new=row['Original_Or_New'],
-            parameter=data['Concept'][row['Parameter_ID']],
+            parameter=data['VerbMeaning'][row['Parameter_ID']],
         )
 
     for row in iteritems(
@@ -200,36 +200,36 @@ def main(args):
 
     refs = collections.defaultdict(list)
 
-    for form in iteritems(
+    for row in iteritems(
         args.cldf, 'FormTable',
         'id', 'form', 'languageReference', 'parameterReference', 'source',
         'Basic_Coding_Frame_ID', 'original_script', 'simplex_or_complex',
         'comment',
     ):
-        vsid = (form['languageReference'], form['parameterReference'])
+        vsid = (row['languageReference'], row['parameterReference'])
         vs = data['ValueSet'].get(vsid)
         if not vs:
             vs = data.add(
                 common.ValueSet,
                 vsid,
                 id='-'.join(vsid),
-                language=data['Variety'][form['languageReference']],
-                parameter=data['Concept'][form['parameterReference']],
-                contribution=data['LanguageContribution'][form['languageReference']],
+                language=data['Variety'][row['languageReference']],
+                parameter=data['VerbMeaning'][row['parameterReference']],
+                contribution=data['LanguageContribution'][row['languageReference']],
             )
-        for ref in form.get('source', []):
+        for ref in row.get('source', []):
             source_id, pages = Sources.parse(ref)
             refs[(vsid, source_id)].append(pages)
         data.add(
-            models.Form,
-            form['id'],
-            id=form['id'],
-            name=form['form'],
-            basic_codingframe=data['CodingFrame'][form['Basic_Coding_Frame_ID']],
+            models.Verb,
+            row['id'],
+            id=row['id'],
+            name=row['form'],
+            basic_codingframe=data['CodingFrame'][row['Basic_Coding_Frame_ID']],
             valueset=vs,
-            comment=form['comment'],
-            original_script=form['original_script'],
-            simplex_or_complex=form['simplex_or_complex'],
+            comment=row['comment'],
+            original_script=row['original_script'],
+            simplex_or_complex=row['simplex_or_complex'],
         )
 
     for (vsid, source_id), pages in refs.items():
@@ -264,9 +264,9 @@ def main(args):
     ):
         example = data['Example'][row['id']]
 
-        for form_id in (row.get('Form_IDs') or ()):
-            form = data['Form'][form_id]
-            DBSession.add(common.ValueSentence(sentence=example, value=form))
+        for verb_id in (row.get('Form_IDs') or ()):
+            verb = data['Verb'][verb_id]
+            DBSession.add(common.ValueSentence(sentence=example, value=verb))
 
         for ref in row['source']:
             src_id, pages = re.fullmatch(r'(.*?)(\[[^\]]*\])?', ref).groups()
@@ -283,7 +283,7 @@ def main(args):
         for example_id in row['exampleReference']:
             DBSession.add(models.CodingFrameExample(
                 codingframe=data['CodingFrame'][row['Coding_Frame_ID']],
-                value=data['Form'][row['formReference']],
+                value=data['Verb'][row['formReference']],
                 sentence=data['Example'][example_id]))
 
     for row in iteritems(
@@ -304,11 +304,11 @@ def main(args):
         args.cldf, 'form-coding-frame-microroles.csv',
         'id', 'formReference', 'Coding_Frame_ID', 'Microrole_IDs'
     ):
-        form = data['Form'][row['formReference']]
+        verb = data['Verb'][row['formReference']]
         codingframe = data['CodingFrame'][row['Coding_Frame_ID']]
         for role_id in row['Microrole_IDs']:
-            DBSession.add(models.FormCodingFrameMicrorole(
-                form=form,
+            DBSession.add(models.VerbCodingFrameMicrorole(
+                verb=verb,
                 codingframe=codingframe,
                 microrole=data['Microrole'][role_id]))
 
@@ -318,7 +318,7 @@ def main(args):
         'Alternation_Occurs', 'comment'
     ):
         alternation = data['Alternation'][row['Alternation_ID']]
-        form = data['Form'][row['formReference']]
+        verb = data['Verb'][row['formReference']]
         if row.get('Derived_Code_Frame_ID'):
             codingframe = data['CodingFrame'][row['Derived_Code_Frame_ID']]
         else:
@@ -329,7 +329,7 @@ def main(args):
             row['id'],
             id=row['id'],
             alternation=alternation,
-            form=form,
+            verb=verb,
             derived_codingframe=codingframe,
             alternation_occurs=row['Alternation_Occurs'],
             comment=row['comment']
@@ -380,20 +380,20 @@ def prime_cache(args):
     verbs_per_codingset = dict(
         DBSession.query(
             models.CodingFrameIndexNumber.codingset_pk,
-            func.count(distinct(models.Form.pk)))
+            func.count(distinct(models.Verb.pk)))
         .where(
             models.CodingFrameIndexNumber.codingframe_pk
-            == models.Form.basic_codingframe_pk)
+            == models.Verb.basic_codingframe_pk)
         .group_by(models.CodingFrameIndexNumber.codingset_pk)
         .all())
 
     microroles_per_codingset = dict(
         DBSession.query(
             models.CodingFrameIndexNumber.codingset_pk,
-            func.count(distinct(models.FormCodingFrameMicrorole.microrole_pk)))
+            func.count(distinct(models.VerbCodingFrameMicrorole.microrole_pk)))
         .where(
             models.CodingFrameIndexNumber.codingframe_pk
-            == models.FormCodingFrameMicrorole.codingframe_pk)
+            == models.VerbCodingFrameMicrorole.codingframe_pk)
         .group_by(models.CodingFrameIndexNumber.codingset_pk)
         .all())
 
@@ -402,7 +402,7 @@ def prime_cache(args):
         codingset.verb_count = verbs_per_codingset.get(codingset.pk) or 0
         codingset.microrole_count = microroles_per_codingset.get(codingset.pk) or 0
 
-    verbs_per_concept = dict(
+    verbs_per_meaning = dict(
         DBSession.query(
             common.ValueSet.parameter_pk,
             func.count(distinct(common.Value.pk)))
@@ -410,5 +410,5 @@ def prime_cache(args):
         .group_by(common.ValueSet.parameter_pk)
         .all())
 
-    for concept in DBSession.query(models.Concept):
-        concept.verb_count = verbs_per_concept.get(concept.pk) or 0
+    for meaning in DBSession.query(models.VerbMeaning):
+        meaning.verb_count = verbs_per_meaning.get(meaning.pk) or 0

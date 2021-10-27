@@ -55,7 +55,7 @@ class Example(CustomModelMixin, common.Sentence):
 
 
 @implementer(interfaces.IParameter)
-class Concept(CustomModelMixin, common.Parameter):
+class VerbMeaning(CustomModelMixin, common.Parameter):
     pk = Column(Integer, ForeignKey('parameter.pk'), primary_key=True)
 
     concepticon_id = Column(Unicode)
@@ -123,9 +123,9 @@ class CodingFrameExample(Base):
     sentence = relationship('Sentence')
 
 
-class FormCodingFrameMicrorole(Base):
-    form_pk = Column(Integer, ForeignKey('form.pk'))
-    form = relationship('Form')
+class VerbCodingFrameMicrorole(Base):
+    verb_pk = Column(Integer, ForeignKey('verb.pk'))
+    verb = relationship('Verb')
     codingframe_pk = Column(Integer, ForeignKey('codingframe.pk'))
     codingframe = relationship('CodingFrame')
 
@@ -134,10 +134,10 @@ class FormCodingFrameMicrorole(Base):
 
 
 @implementer(interfaces.IValue)
-class Form(CustomModelMixin, common.Value):
+class Verb(CustomModelMixin, common.Value):
     pk = Column(Integer, ForeignKey('value.pk'), primary_key=True)
     basic_codingframe_pk = Column(Integer, ForeignKey('codingframe.pk'))
-    basic_codingframe = relationship('CodingFrame', backref='forms')
+    basic_codingframe = relationship('CodingFrame', backref='verbs')
     original_script = Column(Unicode)
     simplex_or_complex = Column(Unicode)
     comment = Column(Unicode)
@@ -158,8 +158,8 @@ class AlternationValue(Base, common.IdNameDescriptionMixin):
     alternation_pk = Column(Integer, ForeignKey('alternation.pk'))
     alternation = relationship('Alternation', backref='alternation_values')
 
-    form_pk = Column(Integer, ForeignKey('form.pk'))
-    form = relationship('Form', backref='alternation_values')
+    verb_pk = Column(Integer, ForeignKey('verb.pk'))
+    verb = relationship('Verb', backref='alternation_values')
     derived_codingframe_pk = Column(Integer, ForeignKey('codingframe.pk'))
     derived_codingframe = relationship('CodingFrame', backref='alternation_values')
 
