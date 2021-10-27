@@ -94,6 +94,36 @@ ${request.get_datatable('alternationvalues', m.AlternationValue, codingframe=ctx
 
 % else:
 
+<%
+    alternation_values = list(
+        DBSession.query(m.AlternationValue)
+        .join(m.Verb)
+        .join(m.CodingFrame, m.AlternationValue.derived_codingframe)
+        .join(m.Alternation)
+        .filter(m.Verb.basic_codingframe_pk == ctx.pk)
+        .order_by(m.CodingFrame.pk)
+        .distinct(m.CodingFrame.pk))
+%>
+% if alternation_values:
+<h3>Derived coding frames</h3>
+<table class="table table-bordered" style="width:auto">
+  <thead>
+    <tr>
+      <th>Derived coding frame</th>
+      <th>via</th>
+    </tr>
+  </thead>
+  <tbody>
+    %   for val in alternation_values:
+    <tr>
+      <td>${h.link(request, val.derived_codingframe)}</td>
+      <td>${h.link(request, val.alternation)}</td>
+    </tr>
+%   endfor
+  </tbody>
+</table>
+% endif
+
 <h3>Verb forms with this basic coding frame</h3>
 
 ## TODO table: | Microrole 1 | Microrole 2 | Microrole 3 |
