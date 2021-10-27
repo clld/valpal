@@ -339,7 +339,7 @@ class Forms(DataTable):
         columns.append(LinkCol(self, 'value', sTitle='Verb form'))
         if not self.parameter:
             columns.append(LinkCol(
-                self, 'concept', model_col=common.Parameter.description,
+                self, 'concept', model_col=common.Parameter.name,
                 get_object=lambda o: o.valueset.parameter,
                 sTitle='Verb Meaning'))
 
