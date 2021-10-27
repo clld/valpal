@@ -22,7 +22,7 @@ for ${_('Value')} ‘${h.link(request, ctx.verb)}’
     <tr>
       <td>${h.link(request, ctx.verb.basic_codingframe)}</td>
       <td><span class="altval-codingframe-arrow">→</span></td>
-      <td>${h.link(request, ctx.derived_codingframe)}</td>
+      <td>${h.link(request, ctx.derived_codingframe) if ctx.derived_codingframe else 'N/A'}</td>
     </tr>
   </tbody>
 </table>
@@ -47,6 +47,7 @@ for ${_('Value')} ‘${h.link(request, ctx.verb)}’
 ${vutil.sentence_list(basic_examples)}
 % endif
 
+% if ctx.derived_codingframe:
 <%
     derived_examples = list(DBSession.query(m.Example)
         .join(m.CodingFrameExample)
@@ -55,9 +56,10 @@ ${vutil.sentence_list(basic_examples)}
             m.CodingFrameExample.value_pk == ctx.verb_pk)
         .order_by(m.Example.number))
 %>
-% if derived_examples:
+%   if derived_examples:
 <h3>Examples for derived coding frame</h3>
 ${vutil.sentence_list(derived_examples)}
+%   endif
 % endif
 
 <%
@@ -70,4 +72,3 @@ ${vutil.sentence_list(derived_examples)}
 <h3>Alternation examples</h3>
 ${vutil.sentence_list(alternation_examples)}
 % endif
-
