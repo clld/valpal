@@ -33,9 +33,8 @@ ${ctx.role_frame}
 <p>
 <b>Microroles</b>:
 ${', '.join(h.link(request, m) for m in ctx.microroles) | n}
-% endif
-
 </p>
+% endif
 
 <div style="clear: both"/>
 % if map_ or request.map:
