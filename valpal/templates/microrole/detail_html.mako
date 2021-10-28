@@ -1,4 +1,7 @@
 <%inherit file="../${context.get('request').registry.settings.get('clld.app_template', 'app.mako')}"/>
+<% from sqlalchemy.orm import aliased %>
+<% from clld.db.meta import DBSession %>
+<% import valpal.models as m %>
 <%namespace name="util" file="../util.mako"/>
 <%! active_menu_item = "microroles" %>
 
@@ -17,5 +20,5 @@
     % endfor
 </ul>
 
-## TODO table
-## | Language | Verb form (<concept>) | Coding frame | Coding set | Argument type |
+<h3>Coding frames with this Microrole</h3>
+${request.get_datatable('verbcodingframemicroroles', m.VerbCodingFrameMicrorole, microrole=ctx).render()}

@@ -24,6 +24,7 @@ from valpal.interfaces import (
     ICodingFrame,
     ICodingSet,
     IMicrorole,
+    IVerbCodingFrameMicrorole,
 )
 
 
@@ -127,6 +128,7 @@ class CodingFrameExample(Base):
     sentence = relationship('Sentence')
 
 
+@implementer(IVerbCodingFrameMicrorole)
 class VerbCodingFrameMicrorole(Base):
     verb_pk = Column(Integer, ForeignKey('verb.pk'))
     verb = relationship('Verb')

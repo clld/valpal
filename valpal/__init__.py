@@ -116,6 +116,11 @@ def main(global_config, **settings):
         'alternation', models.Alternation, interfaces.IAlternation, with_index=True)
     config.register_resource(
         'alternationvalue', models.AlternationValue, interfaces.IAlternationValue, with_index=True)
+    config.register_resource(
+        'verbcodingframemicrorole',
+        models.VerbCodingFrameMicrorole,
+        interfaces.IVerbCodingFrameMicrorole,
+        with_index=True)
 
     config.add_page('project')
     config.add_page('database')

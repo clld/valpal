@@ -19,3 +19,7 @@ class IAlternation(Interface):
 
 class IAlternationValue(Interface):
     pass
+
+
+class IVerbCodingFrameMicrorole(Interface):
+    pass

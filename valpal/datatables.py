@@ -496,6 +496,43 @@ class AlternationValues(DataTable):
         return {'aaSorting': []}
 
 
+class VerbCodingFrameMicroroles(DataTable):
+    __constraints__ = [models.Microrole]
+
+    def base_query(self, query):
+        query = query\
+            .join(models.VerbCodingFrameMicrorole.verb)\
+            .join(models.VerbCodingFrameMicrorole.codingframe)\
+            .join(models.VerbCodingFrameMicrorole.microrole)\
+            .join(common.ValueSet)\
+            .join(models.LanguageContribution)
+
+        if self.microrole:
+            query = query.filter(
+                models.VerbCodingFrameMicrorole.microrole ==
+                self.microrole)
+
+        return query
+
+    def col_defs(self):
+        return [
+            LinkCol(
+                self, 'contribution', sTitle='Language',
+                model_col=models.LanguageContribution.name,
+                get_object=lambda vcm: vcm.verb.valueset.contribution),
+            LinkCol(
+                self, 'verb_form',
+                model_col=models.Verb.name,
+                get_object=lambda vcm: vcm.verb),
+            LinkCol(
+                self, 'coding_frame',
+                model_col=models.CodingFrame.name,
+                get_object=lambda vcm: vcm.codingframe),
+        ]
+
+## | Language | Verb form (<concept>) | Coding frame | Coding set | Argument type |
+
+
 def includeme(config):
     """register custom datatables"""
 
@@ -510,3 +547,4 @@ def includeme(config):
     config.register_datatable('values', Verbs)
     config.register_datatable('alternations', Alternations)
     config.register_datatable('alternationvalues', AlternationValues)
+    config.register_datatable('verbcodingframemicroroles', VerbCodingFrameMicroroles)
