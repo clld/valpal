@@ -515,6 +515,8 @@ class VerbCodingFrameMicroroles(DataTable):
         return query
 
     def col_defs(self):
+        # TODO Coding set column
+        # TODO Argument type column
         return [
             LinkCol(
                 self, 'contribution', sTitle='Language',
