@@ -10,7 +10,8 @@
 <h2>${ctx.domainelement.name if ctx.domainelement else ctx.name} ${'({})'.format(ctx.original_script) if ctx.original_script else ''}</h2>
 
 <div id="verb-infobox" class="well well-small">
-<p><b>${_('Contribution')}</b>: ${h.link(request, ctx.valueset.language.contributions[0])}</p>
+  <p><b>${_('Contribution')}</b>: ${h.link(request, ctx.valueset.contribution)}</p>
+  <p><b>${_('Contributors')}</b>: ${h.linked_contributors(request, ctx.valueset.contribution)}</p>
 % if ctx.valueset.references:
 <p><b>References</b>: ${h.linked_references(request, ctx.valueset)|n}</p>
 % endif
