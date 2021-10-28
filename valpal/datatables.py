@@ -412,6 +412,7 @@ class AlternationValues(DataTable):
         basic_coding_frame_alias = aliased(models.CodingFrame)
         derived_coding_frame_alias = aliased(models.CodingFrame)
         query = DBSession.query(models.AlternationValue)\
+            .join(models.Alternation, isouter=True)\
             .join(models.Verb, isouter=True)\
             .join(common.ValueSet, isouter=True)\
             .join(models.VerbMeaning, isouter=True)\
@@ -432,24 +433,26 @@ class AlternationValues(DataTable):
                     models.AlternationValue.alternation_occurs == 'Regularly')
 
         if self.verb:
-            query = query\
-                .filter(models.AlternationValue.verb == self.verb)\
-                .order_by(case(
-                    {
-                        'Regularly': 0,
-                        'Marginally': 1,
-                        'Never': 2,
-                        'No data': 3,
-                    },
-                    value=models.AlternationValue.alternation_occurs,
-                    else_=4))
+            query = query.filter(models.AlternationValue.verb == self.verb)
 
         if self.alternation:
             query = query.filter(models.AlternationValue.alternation == self.alternation)
-        else:
-            query = query.join(models.Alternation)
 
         return query
+
+    def default_order(self):
+        if self.verb:
+            return case(
+                {
+                    'Regularly': 0,
+                    'Marginally': 1,
+                    'Never': 2,
+                    'No data': 3,
+                },
+                value=models.AlternationValue.alternation_occurs,
+                else_=4)
+        else:
+            return models.Alternation.name, models.Verb.name
 
     def col_defs(self):
         if self.alternation:
@@ -488,6 +491,9 @@ class AlternationValues(DataTable):
             LinkToSelfCol(self, 'details', sTitle='')))
 
         return cols
+
+    def get_options(self):
+        return {'aaSorting': []}
 
 
 def includeme(config):
