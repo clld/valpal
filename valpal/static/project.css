@@ -162,6 +162,9 @@ table.example-list td:first-child
     background-image: linear-gradient(to bottom, #2796a5, #1d717c);
 }
 
+table.altval-codingframe th {
+    text-align: left;
+}
 span.altval-codingframe-arrow {
     padding: 1ex;
     color: gray;

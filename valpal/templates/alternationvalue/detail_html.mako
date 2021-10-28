@@ -10,7 +10,7 @@ Alternation ‘${h.link(request, ctx.alternation)}’
 for ${_('Value')} ‘${h.link(request, ctx.verb)}’
 </h2>
 
-<table>
+<table class="altval-codingframe">
   <thead>
     <tr>
       <th>Basic coding frame</th>
