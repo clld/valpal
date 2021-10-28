@@ -1,6 +1,6 @@
 import html
 
-from sqlalchemy import desc
+from sqlalchemy import case, desc
 from sqlalchemy.orm import aliased, joinedload, subqueryload
 
 from clld.db.meta import DBSession
@@ -402,7 +402,7 @@ class Alternations(DataTable):
 
 
 class AlternationValues(DataTable):
-    __constraints__ = [models.Alternation, models.CodingFrame]
+    __constraints__ = [models.Alternation, models.CodingFrame, models.Verb]
 
     def base_query(self, _):
         basic_coding_frame_alias = aliased(models.CodingFrame)
@@ -427,14 +427,29 @@ class AlternationValues(DataTable):
                 .filter(
                     models.AlternationValue.alternation_occurs == 'Regularly')
 
+        if self.verb:
+            query = query\
+                .filter(models.AlternationValue.verb == self.verb)\
+                .order_by(case(
+                    {
+                        'Regularly': 0,
+                        'Marginally': 1,
+                        'Never': 2,
+                        'No data': 3,
+                    },
+                    value=models.AlternationValue.alternation_occurs,
+                    else_=4))
+
         if self.alternation:
-            return query\
+            query = query\
                 .filter(models.AlternationValue.alternation == self.alternation)\
                 .order_by(models.AlternationValue.id)
         else:
-            return query\
+            query = query\
                 .join(models.Alternation)\
                 .order_by(models.Alternation.name)
+
+        return query
 
     def col_defs(self):
         if self.alternation:
@@ -444,18 +459,19 @@ class AlternationValues(DataTable):
                 self, 'alternation', model_col=models.Alternation.name,
                 get_object=lambda o: o.alternation)]
 
-        cols.extend((
-            LinkCol(
-                self, 'meaning', model_col=models.VerbMeaning.name,
-                get_object=lambda o: o.verb.valueset.parameter,
-                sTitle='Verb Meaning'),
-            LinkCol(
-                self, 'verb_form', model_col=models.Verb.name,
-                get_object=lambda o: o.verb),
-            LinkCol(
-                self, 'basic_coding_frame', model_col=models.CodingFrame.name,
-                get_object=lambda o: o.verb.basic_codingframe),
-        ))
+        if not self.verb:
+            cols.extend((
+                LinkCol(
+                    self, 'meaning', model_col=models.VerbMeaning.name,
+                    get_object=lambda o: o.verb.valueset.parameter,
+                    sTitle='Verb Meaning'),
+                LinkCol(
+                    self, 'verb_form', model_col=models.Verb.name,
+                    get_object=lambda o: o.verb),
+                LinkCol(
+                    self, 'basic_coding_frame', model_col=models.CodingFrame.name,
+                    get_object=lambda o: o.verb.basic_codingframe),
+            ))
 
         if not self.codingframe:
             cols.extend((

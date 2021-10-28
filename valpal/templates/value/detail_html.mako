@@ -73,3 +73,8 @@
 <b>${_('Sentences')}</b>:
 ${vutil.sentence_list(examples)}
 % endif
+
+
+<h3>Alternations</h3>
+
+${request.get_datatable('alternationvalues', m.AlternationValue, verb=ctx).render()}
