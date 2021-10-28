@@ -91,8 +91,8 @@ class Languages(datatables.Languages):
     def base_query(self, query):
         return query\
             .join(models.Variety)\
-            .join(Family)\
             .options(joinedload(models.Variety.family))\
+            .join(Family)\
             .distinct()
 
     def col_defs(self):
@@ -103,9 +103,11 @@ class Languages(datatables.Languages):
             FamilyCol(self, 'Family', models.Variety),
             Col(self,
                 'latitude',
+                bSortable=False, bSearchable=False,
                 sDescription='<small>The geographic latitude</small>'),
             Col(self,
                 'longitude',
+                bSortable=False, bSearchable=False,
                 sDescription='<small>The geographic longitude</small>'),
             LanguageContributorsCol(self, 'contributor'),
             LinkToMapCol(self, 'm'),
@@ -114,12 +116,10 @@ class Languages(datatables.Languages):
 
 class Contributions(DataTable):
 
-    def query(self, _):
-        return DBSession.query(models.LanguageContribution)\
-            .join(models.Language)\
-            .join(Family)\
-            .options(joinedload(models.Variety.family))\
-            .distinct()
+    def base_query(self, query):
+        return query\
+            .join(models.Variety)\
+            .join(models.Variety.family, isouter=True)
 
     def col_defs(self):
         # TODO show citation for language contributions
@@ -129,15 +129,17 @@ class Contributions(DataTable):
                 self, 'id', sTitle='Glottocode',
                 get_object=lambda i: i.language),
             MapLessFamilyCol(
-                self, 'Family', models.Variety,
+                self, 'family', models.Variety,
                 get_object=lambda i: i.language),
             Col(self,
                 'latitude',
                 get_object=lambda i: i.language,
+                bSortable=False, bSearchable=False,
                 sDescription='<small>The geographic latitude</small>'),
             Col(self,
                 'longitude',
                 get_object=lambda i: i.language,
+                bSortable=False, bSearchable=False,
                 sDescription='<small>The geographic longitude</small>'),
             ContributorsCol(self, 'contributors'),
             #LinkToMapCol(self, 'm'),
@@ -155,19 +157,19 @@ class LangContributors(DataTable):
 
 class Examples(datatables.Sentences):
 
-    __constraints__ = [common.Contribution]
+    __constraints__ = [common.Language, common.Parameter, common.Contribution]
 
     def base_query(self, query):
-        query = query\
-            .join(common.Contribution)\
-            .order_by(
-                models.Example.contribution_pk,
-                models.Example.number)
+        query = super().base_query(query)
+        query = query.join(common.Contribution)
 
         if self.contribution:
             query = query.filter(models.Example.language_pk == self.contribution.language_pk)
 
         return query
+
+    def default_order(self):
+        return common.Language.name, models.Example.number
 
     def col_defs(self):
         if self.contribution:
@@ -202,19 +204,20 @@ class VerbMeanings(DataTable):
         return [
             LinkCol(self, 'name'),
             ConcepticonCol(self, 'concepticon_id'),
-            Col(self, 'verb_count', sTitle='# Verbs'),
+            Col(self, 'verb_count', sTitle='# Verbs', bSearchable=False),
         ]
 
 
 class Microroles(DataTable):
 
-    def base_query(self, _):
-        return DBSession.query(models.Microrole)\
-            .join(models.VerbMeaning)\
-            .order_by(
-                models.VerbMeaning.name,
-                desc(models.Microrole.original_or_new),
-                models.Microrole.role_letter)
+    def base_query(self, query):
+        return query.join(models.VerbMeaning)
+
+    def default_order(self):
+        return (
+            models.VerbMeaning.name,
+            desc(models.Microrole.original_or_new),
+            models.Microrole.role_letter)
 
     def col_defs(self):
         role_choices = [
@@ -237,28 +240,30 @@ class Microroles(DataTable):
                     ('Original role', 'Original')]),
         ]
 
+    def get_options(self):
+        return {'aaSorting': []}
+
 
 class CodingSets(DataTable):
     __constraints__ = [common.Contribution]
 
-    def base_query(self, _):
-        query = DBSession.query(models.CodingSet)\
+    def base_query(self, query):
+        query = query\
             .join(common.Language)\
             .join(models.LanguageContribution)
 
         if self.contribution:
-            return query.filter(models.CodingSet.language == self.contribution.language)\
-                .order_by(models.CodingSet.name)
-        else:
-            return query.order_by(common.Contribution.name)
+            query = query.filter(models.CodingSet.language == self.contribution.language)
+
+        return query
 
     def col_defs(self):
         if self.contribution:
             return [
                 LinkCol(self, 'name', sTitle='Coding set'),
-                Col(self, 'codingframe_count', sTitle='# Coding frames'),
-                Col(self, 'verb_count', sTitle='# Verbs'),
-                Col(self, 'microrole_count', sTitle='# Microroles'),
+                Col(self, 'codingframe_count', sTitle='# Coding frames', bSearchable=False),
+                Col(self, 'verb_count', sTitle='# Verbs', bSearchable=False),
+                Col(self, 'microrole_count', sTitle='# Microroles', bSearchable=False),
                 PlainTextCol(self, 'comment', bSortable=False),
             ]
         else:
@@ -267,9 +272,9 @@ class CodingSets(DataTable):
                     self, 'contribution', model_col=common.Contribution.name,
                     get_object=lambda o: o.language.contributions[0],
                     label='Language'),
-                LinkCol(self, 'name', sTitle='Coding set'),
-                Col(self, 'codingframe_count', sTitle='# Coding frames'),
-                Col(self, 'verb_count', sTitle='# Verbs'),
+                LinkCol(self, 'name', sTitle='Coding set', bSearchable=False),
+                Col(self, 'codingframe_count', sTitle='# Coding frames', bSearchable=False),
+                Col(self, 'verb_count', sTitle='# Verbs', bSearchable=False),
                 PlainTextCol(self, 'comment', bSortable=False),
             ]
 
@@ -284,10 +289,9 @@ class CodingFrames(DataTable):
             .join(common.Contribution)
 
         if self.contribution:
-            return query.filter(models.CodingFrame.language == self.contribution.language)\
-                .order_by(models.CodingFrame.name)
-        else:
-            return query.order_by(common.Contribution.name)
+            query = query.filter(models.CodingFrame.language == self.contribution.language)
+
+        return query
 
     def col_defs(self):
         if self.contribution:
@@ -333,7 +337,7 @@ class Verbs(DataTable):
         if self.codingframe:
             query = query.filter(models.Verb.basic_codingframe == self.codingframe)
 
-        return query.order_by(common.ValueSet.id)
+        return query
 
     def col_defs(self):
         columns = []
@@ -345,7 +349,7 @@ class Verbs(DataTable):
                     get_object=lambda o: o.valueset.language.contributions[0],
                     label='Language'))
 
-        columns.append(LinkCol(self, 'value', sTitle='Verb form'))
+        columns.append(LinkCol(self, 'name', sTitle='Verb form'))
         if not self.parameter:
             columns.append(LinkCol(
                 self, 'meaning', model_col=common.Parameter.name,
@@ -373,11 +377,11 @@ class Alternations(DataTable):
         query = DBSession.query(models.Alternation)\
             .join(common.Language)\
             .join(models.LanguageContribution)
+
         if self.contribution:
-            return query.filter(models.Alternation.language == self.contribution.language)\
-                .order_by(models.Alternation.name)
-        else:
-            return query.order_by(common.Contribution.name)
+            query = query.filter(models.Alternation.language == self.contribution.language)
+
+        return query
 
     def col_defs(self):
         if self.contribution:
@@ -441,13 +445,9 @@ class AlternationValues(DataTable):
                     else_=4))
 
         if self.alternation:
-            query = query\
-                .filter(models.AlternationValue.alternation == self.alternation)\
-                .order_by(models.AlternationValue.id)
+            query = query.filter(models.AlternationValue.alternation == self.alternation)
         else:
-            query = query\
-                .join(models.Alternation)\
-                .order_by(models.Alternation.name)
+            query = query.join(models.Alternation)
 
         return query
 
