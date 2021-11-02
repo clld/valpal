@@ -147,6 +147,7 @@ table.example-list td:first-child
     padding-right: 1ex;
 }
 
+/*
 .link-to-self a {
     padding: .5ex;
     border-style: solid;
@@ -161,6 +162,7 @@ table.example-list td:first-child
     color: #fff;
     background-image: linear-gradient(to bottom, #2796a5, #1d717c);
 }
+*/
 
 table.altval-codingframe th {
     text-align: left;
