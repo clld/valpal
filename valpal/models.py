@@ -172,6 +172,8 @@ class AlternationValue(Base, common.IdNameDescriptionMixin):
     alternation_occurs = Column(Unicode)
     comment = Column(Unicode)
 
+    example_count = Column(Integer)
+
 
 class AlternationValueSentence(Base):
     alternation_value_pk = Column(Integer, ForeignKey('alternationvalue.pk'))

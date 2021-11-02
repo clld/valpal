@@ -486,9 +486,14 @@ class AlternationValues(DataTable):
                     sTitle='Occurs', choices=['Never', 'Regularly', 'No data', 'Marginally']),
             ))
 
-        cols.extend((
-            PlainTextCol(self, 'comment', bSortable=False),
-            LinkToSelfCol(self, 'details', sTitle='')))
+        cols.append(PlainTextCol(self, 'comment', bSortable=False))
+
+        if self.alternation:
+            cols.append(Col(
+                self, 'example_count',
+                sTitle='#&nbsp;Ex.', bSortable=False, bSearchable=False))
+
+        cols.append(LinkToSelfCol(self, 'details', sTitle=''))
 
         return cols
 

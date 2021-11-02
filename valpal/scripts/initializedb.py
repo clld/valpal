@@ -415,3 +415,37 @@ def prime_cache(args):
 
     for meaning in DBSession.query(models.VerbMeaning):
         meaning.verb_count = verbs_per_meaning.get(meaning.pk) or 0
+
+    examples_per_altval = dict(
+        DBSession.query(
+            models.AlternationValueSentence.alternation_value_pk,
+            func.count(distinct(models.Example.pk)))
+        .where(
+            models.AlternationValueSentence.sentence_pk
+            == models.Example.pk)
+        .group_by(models.AlternationValueSentence.alternation_value_pk)
+        .all())
+
+    query = (
+        DBSession.query(
+            models.CodingFrameExample.value_pk,
+            models.CodingFrameExample.codingframe_pk,
+            func.count(distinct(models.CodingFrameExample.sentence_pk)))
+        .group_by(
+            models.CodingFrameExample.value_pk,
+            models.CodingFrameExample.codingframe_pk))
+    examples_per_codingframe = {
+        (vpk, cfpk): ex_count
+        for vpk, cfpk, ex_count in query.all()}
+
+    query = DBSession.query(models.AlternationValue).join(models.Verb)
+    for altval in query.all():
+        verb_pk = altval.verb_pk
+        bcf_pk = altval.verb.basic_codingframe_pk
+        dcf_pk = altval.derived_codingframe_pk
+
+        per_val = examples_per_altval.get(altval.pk) or 0
+        per_bcf = examples_per_codingframe.get((verb_pk, bcf_pk)) or 0
+        per_dcf = examples_per_codingframe.get((verb_pk, dcf_pk)) or 0
+
+        altval.example_count = per_val + per_bcf + per_dcf
