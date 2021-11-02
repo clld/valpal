@@ -183,9 +183,7 @@ class Examples(datatables.Sentences):
             ]
 
         cols.extend((
-            Col(
-                self, 'number', sTitle='#',
-                model_col=models.Example.number),
+            Col(self, 'number', sTitle='#', model_col=models.Example.number),
             LinkCol(self, 'name', sTitle='Primary text', sClass="object-language"),
             TsvCol(self, 'analyzed', sTitle='Analyzed text'),
             TsvCol(self, 'gloss', sClass="gloss"),
