@@ -71,7 +71,18 @@
         .order_by(m.Example.number))
 %>
 % if examples:
-<b>${_('Sentences')}</b>:
+<b>${_('Sentences')} for basic coding frame</b>:
+${vutil.sentence_list(examples)}
+% endif
+
+<%
+    examples = list(DBSession.query(m.Example)
+        .join(h.models.ValueSentence)
+        .filter(h.models.ValueSentence.value_pk == ctx.pk)
+        .order_by(m.Example.number))
+%>
+% if examples:
+<b>${_('Sentences')} for the ${_('Value')}</b>:
 ${vutil.sentence_list(examples)}
 % endif
 
