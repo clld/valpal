@@ -408,20 +408,21 @@ class Alternations(DataTable):
 class AlternationValues(DataTable):
     __constraints__ = [models.Alternation, models.CodingFrame, models.Verb]
 
+    basic_coding_frame_alias = aliased(models.CodingFrame)
+    derived_coding_frame_alias = aliased(models.CodingFrame)
+
     def base_query(self, _):
-        basic_coding_frame_alias = aliased(models.CodingFrame)
-        derived_coding_frame_alias = aliased(models.CodingFrame)
         query = DBSession.query(models.AlternationValue)\
             .join(models.Alternation, isouter=True)\
             .join(models.Verb, isouter=True)\
             .join(common.ValueSet, isouter=True)\
             .join(models.VerbMeaning, isouter=True)\
             .join(
-                basic_coding_frame_alias,
+                self.basic_coding_frame_alias,
                 models.Verb.basic_codingframe,
                 isouter=True)\
             .join(
-                derived_coding_frame_alias,
+                self.derived_coding_frame_alias,
                 models.AlternationValue.derived_codingframe,
                 isouter=True)
 
@@ -472,14 +473,14 @@ class AlternationValues(DataTable):
                     self, 'verb_form', model_col=models.Verb.name,
                     get_object=lambda o: o.verb),
                 LinkCol(
-                    self, 'basic_coding_frame', model_col=models.CodingFrame.name,
+                    self, 'basic_coding_frame', model_col=self.basic_coding_frame_alias.name,
                     get_object=lambda o: o.verb.basic_codingframe),
             ))
 
         if not self.codingframe:
             cols.extend((
                 LinkCol(
-                    self, 'derived_coding_frame', model_col=models.CodingFrame.name,
+                    self, 'derived_coding_frame', model_col=self.derived_coding_frame_alias.name,
                     get_object=lambda o: o.derived_codingframe),
                 Col(
                     self, 'alternation_occurs',
