@@ -1,4 +1,5 @@
 import collections
+import csv
 import re
 
 import datetime
@@ -361,6 +362,19 @@ def main(args):
                 DBSession.add(models.AlternationValueSentence(
                     alternation_value=val,
                     sentence=ex))
+
+    with etc_dir.joinpath('terms.csv').open(encoding='utf-8') as gf:
+        rdr = csv.reader(gf)
+        rdr_i = iter(rdr)
+        cols = next(rdr_i)
+        rows = [dict(zip(cols, row)) for row in rdr_i]
+    for row in rows:
+        DBSession.add(models.Term(
+            id=row.get('id'),
+            name=row.get('term'),
+            description=row.get('description'),
+            definition=row.get('definition'),
+            see_also=row.get('see_also')))
 
 
 def prime_cache(args):

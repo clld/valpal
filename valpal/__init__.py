@@ -124,9 +124,11 @@ def main(global_config, **settings):
 
     config.add_page('project')
     config.add_page('database')
+    config.add_page('glossary')
     config.add_page('credits')
     config.add_settings(home_comp=[
-        'project', 'database', 'download', 'credits', 'legal', 'contact',
+        'project', 'database', 'download', 'glossary', 'credits', 'legal',
+        'contact',
     ])
 
     # unbreak links to the old webapp

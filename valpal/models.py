@@ -180,3 +180,8 @@ class AlternationValueSentence(Base):
     alternation_value = relationship('AlternationValue', backref='sentence_assocs')
     sentence_pk = Column(Integer, ForeignKey('sentence.pk'))
     sentence = relationship('Sentence', backref='alternation_value_assocs')
+
+
+class Term(Base, common.IdNameDescriptionMixin):
+    definition = Column(Unicode)
+    see_also = Column(Unicode)

@@ -173,3 +173,8 @@ span.altval-codingframe-arrow {
     font-size: 150%;
     font-weight: bold;
 }
+
+#terms tr > td:first-child
+{
+    white-space: nowrap;
+}
