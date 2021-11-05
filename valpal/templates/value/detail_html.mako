@@ -17,12 +17,31 @@
 % endif
 </div>
 
+<%
+    examples = list(DBSession.query(m.Example)
+        .join(h.models.ValueSentence)
+        .join(h.models.Value)
+        .join(m.AlternationValueSentence, isouter=True)
+        .join(
+            m.CodingFrameExample,
+            m.CodingFrameExample.sentence_pk == m.Example.pk,
+            isouter=True)
+        .filter(
+            h.models.Value.pk == ctx.pk,
+            m.AlternationValueSentence.sentence_pk == None,
+            m.CodingFrameExample.sentence_pk == None)
+        .order_by(m.Example.number))
+%>
+
 % if ctx.simplex_or_complex:
 <p>${ctx.simplex_or_complex} verb</p>
 % endif
 <p><b>${_('Parameter')}</b>: ${h.link(request, ctx.valueset.parameter)}</p>
 % if ctx.comment:
 <p><b>Comment</b>: ${ctx.comment}</p>
+% endif
+% if examples:
+<p><b>${_('Sentences')}</b>: <a href="#other-examples">see at the bottom</a></p>
 % endif
 
 
@@ -63,39 +82,22 @@
 % endif
 
 <%
-    examples = list(DBSession.query(m.Example)
+    basic_cf_examples = list(DBSession.query(m.Example)
         .join(m.CodingFrameExample)
         .filter(
             m.CodingFrameExample.codingframe_pk == ctx.basic_codingframe_pk,
             m.CodingFrameExample.value_pk == ctx.pk)
         .order_by(m.Example.number))
 %>
-% if examples:
+% if basic_cf_examples:
 <b>${_('Sentences')} for basic coding frame</b>:
-${vutil.sentence_list(examples)}
+${vutil.sentence_list(basic_cf_examples)}
 % endif
-
-<%
-    examples = list(DBSession.query(m.Example)
-        .join(h.models.ValueSentence)
-        .join(h.models.Value)
-        .join(m.AlternationValueSentence, isouter=True)
-        .join(
-            m.CodingFrameExample,
-            m.CodingFrameExample.sentence_pk == m.Example.pk,
-            isouter=True)
-        .filter(
-            h.models.Value.pk == ctx.pk,
-            m.AlternationValueSentence.sentence_pk == None,
-            m.CodingFrameExample.sentence_pk == None)
-        .order_by(m.Example.number))
-%>
-% if examples:
-<h3>${_('Sentences')}</h3>
-${vutil.sentence_list(examples)}
-% endif
-
 
 <h3>Alternations</h3>
-
 ${request.get_datatable('alternationvalues', m.AlternationValue, verb=ctx).render()}
+
+% if examples:
+<h3 id="other-examples">${_('Sentences')}</h3>
+${vutil.sentence_list(examples)}
+% endif
