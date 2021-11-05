@@ -78,11 +78,20 @@ ${vutil.sentence_list(examples)}
 <%
     examples = list(DBSession.query(m.Example)
         .join(h.models.ValueSentence)
-        .filter(h.models.ValueSentence.value_pk == ctx.pk)
+        .join(h.models.Value)
+        .join(m.AlternationValueSentence, isouter=True)
+        .join(
+            m.CodingFrameExample,
+            m.CodingFrameExample.sentence_pk == m.Example.pk,
+            isouter=True)
+        .filter(
+            h.models.Value.pk == ctx.pk,
+            m.AlternationValueSentence.sentence_pk == None,
+            m.CodingFrameExample.sentence_pk == None)
         .order_by(m.Example.number))
 %>
 % if examples:
-<b>${_('Sentences')} for the ${_('Value')}</b>:
+<h3>${_('Sentences')}</h3>
 ${vutil.sentence_list(examples)}
 % endif
 
