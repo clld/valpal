@@ -339,6 +339,9 @@ class Verbs(DataTable):
 
         return query
 
+    def default_order(self):
+        return common.Parameter.name
+
     def col_defs(self):
         columns = []
 
@@ -349,13 +352,12 @@ class Verbs(DataTable):
                     get_object=lambda o: o.valueset.language.contributions[0],
                     label='Language'))
 
+        columns.append(LinkCol(self, 'name', sTitle='Verb form'))
         if not self.parameter:
             columns.append(LinkCol(
                 self, 'meaning', model_col=common.Parameter.name,
                 get_object=lambda o: o.valueset.parameter,
                 sTitle='Verb Meaning'))
-
-        columns.append(LinkCol(self, 'name', sTitle='Verb form'))
 
         # TODO list of microroles
         if not self.codingframe:
@@ -369,6 +371,9 @@ class Verbs(DataTable):
         columns.append(PlainTextCol(self, 'comment', bSortable=False))
 
         return columns
+
+    def get_options(self):
+        return {'aaSorting': []}
 
 
 class Alternations(DataTable):
