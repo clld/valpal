@@ -14,7 +14,7 @@ in the following places:
     A released version on
     ${h.external_link('https://zenodo.org', 'Zenodo')}
     under the following DOI:<br>
-    TODO
+    <a href="https://doi.org/10.5281/zenodo.5667260"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.5667260.svg" alt="DOI"></a>
   </li>
   <li>
     A
