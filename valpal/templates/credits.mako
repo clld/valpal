@@ -35,3 +35,12 @@ editing of the database, and who shared our enthusiasm in bringing together this
 treasure of information: Tina Gregor, Soung-U Kim, Hanna Thiele, and Luisa
 Baumann, as well as various interns that also helped us over the years.
 </p>
+
+<p>
+<b>Update (Nov 2021):</b>
+For giving ValPaL a new and future life-span within the
+${h.external_link('https://clld.org/', label='CLLD')}/${h.external_link('https://cldf.clld.org/', label='CLDF')}
+framework and a more robust web app the editors would like to thank Johannes Englisch.
+We are also grateful to  Christoph Rzymski and Robert Forkel for deploying this
+new version of ValPaL to a new more sustainable server environment.
+</p>
