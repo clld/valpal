@@ -5,7 +5,7 @@ Install the development environment:
 
 ```sh
 $ pip install virtualenv  # might require sudo/admin privileges
-$ git clone https://github.com/clld/clld.git  # you may also clone a suitable fork
+$ git clone https://github.com/clld/valpal.git  # you may also clone a suitable fork
 $ cd valpal
 $ python -m virtualenv .venv
 $ source .venv/bin/activate  # Windows: .venv\Scripts\activate.bat
@@ -22,7 +22,11 @@ $ createdb valpal
 and initialize it, either
 - loading a dump of the production DB, using the app's `load_db` task from the
 `appconfig` package
-- or by running `clld initdb development.ini` (may require access to the appropriate data repository).
+- or by running the following comman:
+
+    clld initdb --glottolog PATH-TO-DATA-REPO --cldf PATH-TO-CLDF-METADATA-FILE development.ini
+
+  (may require access to the appropriate data repository).
 
 Now you should be able to run the tests:
 
