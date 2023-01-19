@@ -22,12 +22,10 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'clld>=9.2.2',
+        'clld>=10.0.0',
         'clld-glottologfamily-plugin>=4.0',
         'pyglottolog',
-
         'clldmpg',
-
         'psycopg2',
         'markdown',
     ],
