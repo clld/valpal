@@ -129,7 +129,7 @@ class CodingFrameExample(Base):
 
 
 @implementer(IVerbCodingFrameMicrorole)
-class VerbCodingFrameMicrorole(Base):
+class VerbCodingFrameMicrorole(Base, common.IdNameDescriptionMixin):
     verb_pk = Column(Integer, ForeignKey('verb.pk'))
     verb = relationship('Verb')
     codingframe_pk = Column(Integer, ForeignKey('codingframe.pk'))
