@@ -21,7 +21,7 @@
 </div>
 
 <p>
-→ <a href="static/download/ValencyDBQuestionnaireManual.pdf">Download manual as PDF</a>
+  → <a href="${request.static_url('valpal:static/download/ValencyDBQuestionnaireManual.pdf')}">Download manual as PDF</a>
 </p>
 
 <div id="database-intro" class="alert alert-block">
