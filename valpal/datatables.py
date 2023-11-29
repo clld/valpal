@@ -89,11 +89,10 @@ class LanguageContributorsCol(Col):
 
 class Languages(datatables.Languages):
     def base_query(self, query):
+        query = super().base_query(query)
         return query\
             .join(models.Variety)\
-            .options(joinedload(models.Variety.family))\
-            .join(Family)\
-            .distinct()
+            .outerjoin(models.Variety.family)
 
     def col_defs(self):
         # TODO show citation for language contributions
@@ -119,7 +118,7 @@ class Contributions(DataTable):
     def base_query(self, query):
         return query\
             .join(models.Variety)\
-            .join(models.Variety.family, isouter=True)
+            .outerjoin(models.Variety.family)
 
     def col_defs(self):
         # TODO show citation for language contributions
@@ -164,7 +163,8 @@ class Examples(datatables.Sentences):
         query = query.join(common.Contribution)
 
         if self.contribution:
-            query = query.filter(models.Example.language_pk == self.contribution.language_pk)
+            query = query.filter(
+                models.Example.language_pk == self.contribution.language_pk)
 
         return query
 
@@ -172,40 +172,38 @@ class Examples(datatables.Sentences):
         return common.Language.name, models.Example.number
 
     def col_defs(self):
+        number = Col(self, 'number', sTitle='#', model_col=models.Example.number)
+        name = LinkCol(self, 'name', sTitle='Primary text', sClass='object-language')
+        analyzed = TsvCol(self, 'analyzed', sTitle='Analyzed text')
+        gloss = TsvCol(self, 'gloss', sClass="gloss")
+        description = Col(
+            self, 'description', sTitle=self.req.translate('Translation'),
+            sClass="translation")
+        comment = PlainTextCol(self, 'comment', bSortable=False)
+        details = DetailsRowLinkCol(self, 'd')
         if self.contribution:
-            cols = []
+            return [
+                number, name, analyzed, gloss, description, comment, details]
         else:
-            cols = [
-                LinkCol(
-                    self, 'contribution', sTitle='Language',
-                    model_col=common.Contribution.name,
-                    get_object=lambda o: o.contribution),
-            ]
-
-        cols.extend((
-            Col(self, 'number', sTitle='#', model_col=models.Example.number),
-            LinkCol(self, 'name', sTitle='Primary text', sClass="object-language"),
-            TsvCol(self, 'analyzed', sTitle='Analyzed text'),
-            TsvCol(self, 'gloss', sClass="gloss"),
-            Col(self,
-                'description',
-                sTitle=self.req.translate('Translation'),
-                sClass="translation"),
-            PlainTextCol(self, 'comment', bSortable=False),
-            DetailsRowLinkCol(self, 'd'),
-        ))
-
-        return cols
+            contribution = LinkCol(
+                self, 'contribution', sTitle='Language',
+                model_col=common.Contribution.name,
+                get_object=lambda o: o.contribution)
+            return [
+                contribution, number, name, analyzed, gloss, description,
+                comment, details]
 
 
 class VerbMeanings(DataTable):
 
     def col_defs(self):
-        return [
-            LinkCol(self, 'name'),
-            ConcepticonCol(self, 'concepticon_id'),
-            Col(self, 'verb_count', sTitle='# Verbs', bSearchable=False),
-        ]
+        name = LinkCol(self, 'name')
+        concepticon = ConcepticonCol(self, 'concepticon_id')
+        verb_count = Col(
+            self, 'verb_count', sTitle='# Verbs',
+            model_col=models.VerbMeaning.verb_count,
+            bSearchable=False)
+        return [name, concepticon, verb_count]
 
 
 class Microroles(DataTable):
@@ -253,67 +251,64 @@ class CodingSets(DataTable):
             .join(models.LanguageContribution)
 
         if self.contribution:
-            query = query.filter(models.CodingSet.language == self.contribution.language)
+            query = query.filter(
+                models.CodingSet.language_pk == self.contribution.language_pk)
 
         return query
 
     def col_defs(self):
+        name = LinkCol(self, 'name', sTitle='Coding set', bSearchable=False)
+        frame_count = Col(
+            self, 'codingframe_count', sTitle='# Coding frames',
+            bSearchable=False)
+        verb_count = Col(
+            self, 'verb_count', sTitle='# Verbs', bSearchable=False)
+        role_count = Col(
+            self, 'microrole_count', sTitle='# Microroles',
+            bSearchable=False)
+        comment = PlainTextCol(self, 'comment', bSortable=False)
         if self.contribution:
-            return [
-                LinkCol(self, 'name', sTitle='Coding set'),
-                Col(self, 'codingframe_count', sTitle='# Coding frames', bSearchable=False),
-                Col(self, 'verb_count', sTitle='# Verbs', bSearchable=False),
-                Col(self, 'microrole_count', sTitle='# Microroles', bSearchable=False),
-                PlainTextCol(self, 'comment', bSortable=False),
-            ]
+            return [name, frame_count, verb_count, role_count, comment]
         else:
+            contribution = LinkCol(
+                self, 'contribution', model_col=common.Contribution.name,
+                get_object=lambda o: o.language.contributions[0],
+                label='Language')
             return [
-                LinkCol(
-                    self, 'contribution', model_col=common.Contribution.name,
-                    get_object=lambda o: o.language.contributions[0],
-                    label='Language'),
-                LinkCol(self, 'name', sTitle='Coding set', bSearchable=False),
-                Col(self, 'codingframe_count', sTitle='# Coding frames', bSearchable=False),
-                Col(self, 'verb_count', sTitle='# Verbs', bSearchable=False),
-                PlainTextCol(self, 'comment', bSortable=False),
-            ]
+                contribution, name, frame_count, verb_count, role_count,
+                comment]
 
 
 class CodingFrames(DataTable):
     __constraints__ = [common.Contribution]
 
-    def base_query(self, _):
-        query = DBSession.query(models.CodingFrame)\
+    def base_query(self, query):
+        query = query\
             .join(common.Language)\
-            .join(models.LanguageContribution)\
-            .join(common.Contribution)
+            .join(models.LanguageContribution)
 
         if self.contribution:
-            query = query.filter(models.CodingFrame.language == self.contribution.language)
+            query = query.filter(
+                models.CodingFrame.language_pk == self.contribution.language_pk)
 
         return query
 
     def col_defs(self):
-        if self.contribution:
-            cols = []
-        else:
-            cols = [
-                LinkCol(
-                    self, 'contribution', model_col=common.Contribution.name,
-                    get_object=lambda o: o.language.contributions[0],
-                    label='Language'),
-            ]
-
         # TODO verb count
         # TODO alternations
         # TODO list of meanings and values
-        cols.extend((
-            LinkCol(self, 'name', sTitle='Coding frame'),
-            Col(self, 'derived', sTitle='Type', choices=['Basic', 'Derived']),
-            PlainTextCol(self, 'comment', bSortable=False),
-        ))
-
-        return cols
+        name = LinkCol(self, 'name', sTitle='Coding frame')
+        type_ = Col(
+            self, 'derived', sTitle='Type', choices=['Basic', 'Derived'])
+        comment = PlainTextCol(self, 'comment', bSortable=False)
+        if self.contribution:
+            return [name, type_, comment]
+        else:
+            contribution = LinkCol(
+                self, 'contribution', model_col=common.Contribution.name,
+                get_object=lambda o: o.language.contributions[0],
+                label='Language')
+            return [contribution, name, type_, comment]
 
 
 class Verbs(DataTable):
@@ -321,21 +316,23 @@ class Verbs(DataTable):
     __constraints__ = [common.Contribution, models.CodingFrame, common.Parameter]
 
     def base_query(self, query):
-        query = query.outerjoin(common.ValueSet)\
-            .outerjoin(
-                models.LanguageContribution,
-                models.LanguageContribution.language_pk == common.ValueSet.language_pk)\
-            .outerjoin(common.Parameter)\
-            .outerjoin(
-                models.CodingFrame,
-                models.Verb.basic_codingframe)
+        query = query.join(common.ValueSet)\
+            .join(models.LanguageContribution)\
+            .join(models.VerbMeaning)
 
         if self.parameter:
-            query = query.filter(common.ValueSet.parameter == self.parameter)
+            query = query.filter(
+                common.ValueSet.parameter_pk == self.parameter.pk)
         if self.contribution:
-            query = query.filter(common.ValueSet.language_pk == self.contribution.language_pk)
+            query = query.filter(
+                common.ValueSet.language_pk == self.contribution.language_pk)
         if self.codingframe:
-            query = query.filter(models.Verb.basic_codingframe == self.codingframe)
+            query = query.filter(
+                models.Verb.basic_codingframe_pk == self.codingframe.pk)
+        else:
+            query = query.join(
+                models.CodingFrame,
+                models.Verb.basic_codingframe)
 
         return query
 
@@ -379,36 +376,31 @@ class Verbs(DataTable):
 class Alternations(DataTable):
     __constraints__ = [common.Contribution]
 
-    def base_query(self, _):
-        query = DBSession.query(models.Alternation)\
+    def base_query(self, query):
+        query = query\
             .join(common.Language)\
             .join(models.LanguageContribution)
 
         if self.contribution:
-            query = query.filter(models.Alternation.language == self.contribution.language)
+            query = query.filter(
+                models.Alternation.language_pk == self.contribution.language_pk)
 
         return query
 
     def col_defs(self):
+        name = LinkCol(self, 'name', sTitle='Alternation')
+        type_ = Col(
+            self, 'alternation_type', sTitle='Type',
+            choices=['Coded', 'Uncoded'])
+        description = PlainTextCol(self, 'description')
         if self.contribution:
-            cols = []
+            return [name, type_, description]
         else:
-            cols = [
-                LinkCol(
-                    self, 'contribution', model_col=common.Contribution.name,
-                    get_object=lambda o: o.language.contributions[0],
-                    label='Language'),
-            ]
-
-        cols.extend((
-            LinkCol(self, 'name', sTitle='Alternation'),
-            Col(
-                self, 'alternation_type',
-                sTitle='Type', choices=['Coded', 'Uncoded']),
-            PlainTextCol(self, 'description'),
-        ))
-
-        return cols
+            contribution = LinkCol(
+                self, 'contribution', model_col=common.Contribution.name,
+                get_object=lambda o: o.language.contributions[0],
+                label='Language')
+            return [contribution, name, type_, description]
 
 
 class AlternationValues(DataTable):
@@ -417,38 +409,41 @@ class AlternationValues(DataTable):
     basic_coding_frame_alias = aliased(models.CodingFrame)
     derived_coding_frame_alias = aliased(models.CodingFrame)
 
-    def base_query(self, _):
-        query = DBSession.query(models.AlternationValue)\
-            .join(models.Alternation, isouter=True)\
-            .join(models.Verb, isouter=True)\
-            .join(common.ValueSet, isouter=True)\
-            .join(models.VerbMeaning, isouter=True)\
-            .join(
-                self.basic_coding_frame_alias,
-                models.Verb.basic_codingframe,
-                isouter=True)\
-            .join(
-                self.derived_coding_frame_alias,
-                models.AlternationValue.derived_codingframe,
-                isouter=True)
-
-        if self.codingframe:
-            query = query\
-                .filter(
-                    models.AlternationValue.derived_codingframe == self.codingframe)\
-                .filter(
-                    models.AlternationValue.alternation_occurs == 'Regularly')
+    def base_query(self, query):
+        if self.alternation:
+            query = query.filter(
+                models.AlternationValue.alternation_pk == self.alternation.pk)
+        else:
+            query = query.join(models.Alternation)
 
         if self.verb:
-            query = query.filter(models.AlternationValue.verb == self.verb)
+            query = query.filter(
+                models.AlternationValue.verb_pk == self.verb.pk)
+        else:
+            query = query.join(models.Verb)
+            query = query.join(
+                self.basic_coding_frame_alias,
+                models.Verb.basic_codingframe)
+            query = query.join(common.ValueSet)
+            query = query.join(models.VerbMeaning)
 
-        if self.alternation:
-            query = query.filter(models.AlternationValue.alternation == self.alternation)
+        # coding frame means *derived* coding frame here
+        if self.codingframe:
+            query = query\
+                .filter(models.AlternationValue.derived_codingframe_pk == self.codingframe.pk)\
+                .filter(models.AlternationValue.alternation_occurs == 'Regularly')
+        else:
+            # outerjoin, b/c some alterations don't have derived coding frames
+            query = query.outerjoin(
+                self.derived_coding_frame_alias,
+                models.AlternationValue.derived_codingframe)
 
         return query
 
     def default_order(self):
-        if self.verb:
+        if self.alternation:
+            return models.Verb.name
+        elif self.verb:
             return case(
                 {
                     'Regularly': 0,
@@ -462,44 +457,42 @@ class AlternationValues(DataTable):
             return models.Alternation.name, models.Verb.name
 
     def col_defs(self):
-        if self.alternation:
-            cols = []
-        else:
-            cols = [LinkCol(
-                self, 'alternation', model_col=models.Alternation.name,
-                get_object=lambda o: o.alternation)]
+        alternation = LinkCol(
+            self, 'alternation', model_col=models.Alternation.name,
+            get_object=lambda o: o.alternation)
+        meaning = LinkCol(
+            self, 'meaning', model_col=models.VerbMeaning.name,
+            get_object=lambda o: o.verb.valueset.parameter,
+            sTitle='Verb Meaning')
+        verb = LinkCol(
+            self, 'verb_form', model_col=models.Verb.name,
+            get_object=lambda o: o.verb)
+        basic_frame = LinkCol(
+            self, 'basic_coding_frame', model_col=self.basic_coding_frame_alias.name,
+            get_object=lambda o: o.verb.basic_codingframe)
+        derived_frame = LinkCol(
+            self, 'derived_coding_frame', model_col=self.derived_coding_frame_alias.name,
+            get_object=lambda o: o.derived_codingframe)
+        occurrence = Col(
+            self, 'alternation_occurs', sTitle='Occurs',
+            choices=['Never', 'Regularly', 'No data', 'Marginally'])
+        comment = PlainTextCol(self, 'comment', bSortable=False)
+        example_count = Col(
+            self, 'example_count',
+            sTitle='#&nbsp;Ex.', bSortable=False, bSearchable=False)
+        details = LinkToSelfCol(self, 'details', sTitle='')
 
+        cols = []
+        if not self.alternation:
+            cols.append(alternation)
         if not self.verb:
-            cols.extend((
-                LinkCol(
-                    self, 'meaning', model_col=models.VerbMeaning.name,
-                    get_object=lambda o: o.verb.valueset.parameter,
-                    sTitle='Verb Meaning'),
-                LinkCol(
-                    self, 'verb_form', model_col=models.Verb.name,
-                    get_object=lambda o: o.verb),
-                LinkCol(
-                    self, 'basic_coding_frame', model_col=self.basic_coding_frame_alias.name,
-                    get_object=lambda o: o.verb.basic_codingframe),
-            ))
-
+            cols.append(meaning)
+            cols.append(verb)
+            cols.append(basic_frame)
         if not self.codingframe:
-            cols.extend((
-                LinkCol(
-                    self, 'derived_coding_frame', model_col=self.derived_coding_frame_alias.name,
-                    get_object=lambda o: o.derived_codingframe),
-                Col(
-                    self, 'alternation_occurs',
-                    sTitle='Occurs', choices=['Never', 'Regularly', 'No data', 'Marginally']),
-            ))
-
-        cols.extend((
-            PlainTextCol(self, 'comment', bSortable=False),
-            Col(
-                self, 'example_count',
-                sTitle='#&nbsp;Ex.', bSortable=False, bSearchable=False),
-            LinkToSelfCol(self, 'details', sTitle='')))
-
+            cols.append(derived_frame)
+            cols.append(occurrence)
+        cols.extend((comment, example_count, details))
         return cols
 
     def get_options(self):
@@ -511,38 +504,38 @@ class VerbCodingFrameMicroroles(DataTable):
 
     def base_query(self, query):
         query = query\
-            .join(models.VerbCodingFrameMicrorole.verb)\
-            .join(models.VerbCodingFrameMicrorole.codingframe)\
-            .join(models.VerbCodingFrameMicrorole.microrole)\
+            .join(models.Verb)\
+            .join(
+                models.CodingFrame,
+                models.VerbCodingFrameMicrorole.codingframe)\
             .join(common.ValueSet)\
             .join(models.LanguageContribution)
 
         if self.microrole:
             query = query.filter(
-                models.VerbCodingFrameMicrorole.microrole ==
-                self.microrole)
+                models.VerbCodingFrameMicrorole.microrole_pk == self.microrole.pk)
+        else:
+            query = query.join(models.Microrole)
 
         return query
 
     def col_defs(self):
+        # | Language | Verb form (<concept>) | Coding frame | Coding set | Argument type |
         # TODO Coding set column
         # TODO Argument type column
-        return [
-            LinkCol(
-                self, 'contribution', sTitle='Language',
-                model_col=models.LanguageContribution.name,
-                get_object=lambda vcm: vcm.verb.valueset.contribution),
-            LinkCol(
-                self, 'verb_form',
-                model_col=models.Verb.name,
-                get_object=lambda vcm: vcm.verb),
-            LinkCol(
-                self, 'coding_frame',
-                model_col=models.CodingFrame.name,
-                get_object=lambda vcm: vcm.codingframe),
-        ]
-
-## | Language | Verb form (<concept>) | Coding frame | Coding set | Argument type |
+        contribution = LinkCol(
+            self, 'contribution', sTitle='Language',
+            model_col=models.LanguageContribution.name,
+            get_object=lambda vcm: vcm.verb.valueset.contribution)
+        verb = LinkCol(
+            self, 'verb_form',
+            model_col=models.Verb.name,
+            get_object=lambda vcm: vcm.verb)
+        coding_frame = LinkCol(
+            self, 'coding_frame',
+            model_col=models.CodingFrame.name,
+            get_object=lambda vcm: vcm.codingframe)
+        return [contribution, verb, coding_frame]
 
 
 def includeme(config):
