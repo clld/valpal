@@ -30,7 +30,6 @@ def iteritems(cldf, t, *cols):
 
 
 def main(args):
-
     assert args.cldf, 'The --cldf option is required!'
     assert args.glottolog, 'The --glottolog option is required!'
 
@@ -63,38 +62,38 @@ def main(args):
         common.Editor(dataset=dataset, contributor=ed, ord=i + 1)
 
     etc_dir = args.cldf.directory.parent / 'etc'
-    for lang in iteritems(
+    for cldf_language in iteritems(
         args.cldf, 'LanguageTable',
         'id', 'glottocode', 'name',
         'latitude', 'longitude',
         'contributors',
     ):
-        comments_file = etc_dir / 'comments-{}.md'.format(lang['glottocode'])
+        comments_file = etc_dir / 'comments-{}.md'.format(cldf_language['glottocode'])
         try:
             with comments_file.open('r', encoding='utf-8') as f:
                 desc = f.read().strip()
         except IOError:
             desc = None
-        l = data.add(
+        language = data.add(
             models.Variety,
-            lang['id'],
-            id=lang['id'],
-            name=lang['name'],
+            cldf_language['id'],
+            id=cldf_language['id'],
+            name=cldf_language['name'],
             description=desc,
-            latitude=lang['latitude'],
-            longitude=lang['longitude'],
-            glottocode=lang['glottocode'],
+            latitude=cldf_language['latitude'],
+            longitude=cldf_language['longitude'],
+            glottocode=cldf_language['glottocode'],
         )
         DBSession.flush()
         contrib = data.add(
             models.LanguageContribution,
-            lang['id'],
-            id=lang['id'],
-            name=lang['name'],
-            language=l,
+            cldf_language['id'],
+            id=cldf_language['id'],
+            name=cldf_language['name'],
+            language=language,
         )
 
-        for index, name in enumerate(lang['contributors'].split(' and ')):
+        for index, name in enumerate(cldf_language['contributors'].split(' and ')):
             parsed_name = HumanName(name)
             pid = slug('{}{}'.format(parsed_name.last, parsed_name.first))
             if pid in data['Contributor']:
@@ -128,7 +127,7 @@ def main(args):
 
     load_families(
         Data(),
-        [(l.glottocode, l) for l in data['Variety'].values()],
+        [(lang.glottocode, lang) for lang in data['Variety'].values()],
         glottolog_repos=args.glottolog,
         isolates_icon='tcccccc',
         strict=False,
@@ -349,7 +348,6 @@ def main(args):
             DBSession.add(models.CodingFrameIndexNumberMicrorole(
                 index_number=data['CodingFrameIndexNumber'][row['id']],
                 microrole=data['Microrole'][role_id]))
-
 
     for row in iteritems(
         args.cldf,

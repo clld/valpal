@@ -5,7 +5,6 @@ from pyramid.config import Configurator
 from clld_glottologfamily_plugin import util as fam_util
 
 from clld.interfaces import IMapMarker, IValueSet
-from clld.db.models import common
 from clld.web.app import menu_item
 from clldutils.svg import icon, data_url
 
@@ -72,13 +71,15 @@ _('Datapoints')
 
 class LanguageByFamilyMapMarker(fam_util.LanguageByFamilyMapMarker):
     def __call__(self, ctx, req):
-
         if IValueSet.providedBy(ctx):
             if ctx.language.family:
-                return data_url(icon(ctx.language.family.jsondata['icon']))
-            return data_url(icon(req.registry.settings.get('clld.isolates_icon', fam_util.ISOLATES_ICON)))
-
-        return super(LanguageByFamilyMapMarker, self).__call__(ctx, req)
+                map_icon = icon(ctx.language.family.jsondata['icon'])
+            else:
+                map_icon = icon(req.registry.settings.get(
+                    'clld.isolates_icon', fam_util.ISOLATES_ICON))
+            return data_url(map_icon)
+        else:
+            return super().__call__(ctx, req)
 
 
 def main(global_config, **settings):
@@ -104,7 +105,7 @@ def main(global_config, **settings):
         ('alternations', partial(menu_item, 'alternations', label='All alternations')),
     )
 
-    #config.registry.registerUtility(LanguageByFamilyMapMarker(), IMapMarker)
+    config.registry.registerUtility(LanguageByFamilyMapMarker(), IMapMarker)
 
     config.register_resource(
         'microrole', models.Microrole, interfaces.IMicrorole, with_index=True)
@@ -164,7 +165,7 @@ def main(global_config, **settings):
         lambda req: req.route_url(
             'contributions',
             LANGUAGE_URLS_FROM_OLD_WEBAPP.get(req.matchdict['lid'])
-                or req.matchdict['lid']))
+            or req.matchdict['lid']))
 
     config.add_301(
         '/languages/{lid}/verbs',

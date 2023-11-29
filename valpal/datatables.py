@@ -1,22 +1,19 @@
 import html
 
 from sqlalchemy import case, desc
-from sqlalchemy.orm import aliased, joinedload, subqueryload
+from sqlalchemy.orm import aliased
 
-from clld.db.meta import DBSession
 from clld.db.models import common
 
 from clld.web import datatables
 from clld.web.datatables.base import (
-    DataTable, Col, DetailsRowLinkCol, LinkCol, LinkToMapCol, RefsCol,
+    DataTable, Col, DetailsRowLinkCol, LinkCol, LinkToMapCol,
 )
 from clld.web.datatables.contribution import ContributorsCol
 from clld.web.datatables.contributor import NameCol, ContributionsCol
-from clld.web.datatables.sentence import TsvCol, TypeCol
+from clld.web.datatables.sentence import TsvCol
 from clld.web.util.helpers import external_link, link, linked_contributors
-from clld.web.util.htmllib import HTML
 
-from clld_glottologfamily_plugin.models import Family
 from clld_glottologfamily_plugin.datatables import FamilyCol
 
 from valpal import models
@@ -89,10 +86,9 @@ class LanguageContributorsCol(Col):
 
 class Languages(datatables.Languages):
     def base_query(self, query):
-        query = super().base_query(query)
-        return query\
-            .join(models.Variety)\
+        query = super().base_query(query)\
             .outerjoin(models.Variety.family)
+        return query
 
     def col_defs(self):
         # TODO show citation for language contributions
@@ -141,7 +137,7 @@ class Contributions(DataTable):
                 bSortable=False, bSearchable=False,
                 sDescription='<small>The geographic longitude</small>'),
             ContributorsCol(self, 'contributors'),
-            #LinkToMapCol(self, 'm'),
+            # LinkToMapCol(self, 'm'),
         ]
 
 

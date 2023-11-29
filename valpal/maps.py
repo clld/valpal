@@ -1,6 +1,6 @@
 from collections import ChainMap
 
-from clld.web.maps import ParameterMap, Layer
+from clld.web.maps import ParameterMap
 
 
 class VerbMap(ParameterMap):

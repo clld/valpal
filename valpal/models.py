@@ -1,16 +1,11 @@
 from zope.interface import implementer
 from sqlalchemy import (
     Column,
-    String,
     Unicode,
     Integer,
-    Boolean,
     ForeignKey,
-    UniqueConstraint,
 )
-from sqlalchemy.orm import relationship, backref
-from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import relationship
 
 from clld import interfaces
 from clld.db.meta import Base, CustomModelMixin
@@ -28,9 +23,9 @@ from valpal.interfaces import (
 )
 
 
-#-----------------------------------------------------------------------------
-# specialized common mapper classes
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+#  specialized common mapper classes
+# -----------------------------------------------------------------------------
 
 @implementer(interfaces.ILanguage)
 class Variety(CustomModelMixin, common.Language, HasFamilyMixin):
